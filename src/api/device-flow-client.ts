@@ -72,13 +72,22 @@ export function isOpenHandsCloudHost(host: string): boolean {
  * Make a direct request to the OpenHands Cloud device-flow endpoint.
  */
 async function makeCloudRequest(
-  upstreamHost: string,
-  method: "GET" | "POST",
-  path: string,
-  body?: unknown,
-  contentType?: string,
-  signal?: AbortSignal,
+  _upstreamHost: string,
+  _method: "GET" | "POST",
+  _path: string,
+  _body?: unknown,
+  _contentType?: string,
+  _signal?: AbortSignal,
 ): Promise<Response> {
+  // CLOUD AUTH DISABLED (privacy): every OpenHands-cloud OAuth device-flow request
+  // (to app.all-hands.dev) is blocked here. Throwing before the fetch guarantees no
+  // request ever leaves the browser for OpenHands' servers. Original preserved below.
+  throw new DeviceFlowError(
+    "OpenHands Cloud login is disabled in this deployment.",
+    "disabled",
+  );
+
+  /* ORIGINAL:
   const requestBody =
     body === undefined
       ? undefined
@@ -99,6 +108,7 @@ async function makeCloudRequest(
   });
 
   return response;
+  */
 }
 
 /**

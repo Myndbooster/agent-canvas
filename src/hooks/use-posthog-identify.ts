@@ -31,16 +31,18 @@ export const usePostHogIdentify = () => {
     if (!posthog || !isCloud || settings === undefined) return;
 
     if (consent === true && userId) {
-      posthog.identify(userId, {
-        email: settings.email ?? settings.git_user_email ?? undefined,
-      });
+      // TELEMETRY DISABLED (privacy): do not send the user's id/email to PostHog.
+      // posthog.identify(userId, {
+      //   email: settings.email ?? settings.git_user_email ?? undefined,
+      // });
       hasIdentifiedRef.current = true;
       return;
     }
 
     // Reset on explicit denial or on logout (userId gone after a prior identify)
     if (consent === false || (hasIdentifiedRef.current && !userId)) {
-      posthog.reset();
+      // TELEMETRY DISABLED (privacy): identify was never sent, nothing to reset.
+      // posthog.reset();
       hasIdentifiedRef.current = false;
     }
   }, [posthog, isCloud, consent, userId, settings?.email, settings]);

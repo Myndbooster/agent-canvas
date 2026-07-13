@@ -97,11 +97,13 @@ export function AppSettingsScreen() {
     setLanguageInputHasChanged(selectedLanguage !== currentLanguage);
   };
 
-  const checkIfAnalyticsSwitchHasChanged = (checked: boolean) => {
-    // Treat null as true since analytics is opt-in by default
-    const currentAnalytics = settings?.user_consents_to_analytics ?? true;
-    setAnalyticsSwitchHasChanged(checked !== currentAnalytics);
-  };
+  // TELEMETRY DISABLED (privacy): analytics toggle is hidden, so its change
+  // handler is unused. Kept commented for restoration.
+  // const checkIfAnalyticsSwitchHasChanged = (checked: boolean) => {
+  //   // Treat null as true since analytics is opt-in by default
+  //   const currentAnalytics = settings?.user_consents_to_analytics ?? true;
+  //   setAnalyticsSwitchHasChanged(checked !== currentAnalytics);
+  // };
 
   const checkIfSoundNotificationsSwitchHasChanged = (checked: boolean) => {
     const currentSoundNotifications = !!settings?.enable_sound_notifications;
@@ -146,6 +148,9 @@ export function AppSettingsScreen() {
 
           <ThemeInput />
 
+          {/* TELEMETRY DISABLED (privacy): analytics opt-in toggle hidden since
+              telemetry is turned off. `user_consents_to_analytics` is saved as
+              false because the form field no longer exists.
           <SettingsSwitch
             testId="enable-analytics-switch"
             name="enable-analytics-switch"
@@ -154,6 +159,7 @@ export function AppSettingsScreen() {
           >
             {t(I18nKey.ANALYTICS$SEND_ANONYMOUS_DATA)}
           </SettingsSwitch>
+          */}
 
           <SettingsSwitch
             testId="enable-sound-notifications-switch"

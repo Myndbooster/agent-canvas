@@ -1,5 +1,7 @@
-import { usePostHog } from "posthog-js/react";
-import { useSettings } from "./query/use-settings";
+// TELEMETRY DISABLED (privacy): the PostHog + user-settings wiring below is
+// commented out so this hook collects and sends nothing. Kept for restoration.
+// import { usePostHog } from "posthog-js/react";
+// import { useSettings } from "./query/use-settings";
 import { Provider } from "#/types/settings";
 import type { BackendKind } from "#/api/backend-registry/types";
 import type { WorkspaceMode } from "#/api/conversation-metadata-store";
@@ -14,22 +16,26 @@ import type { WorkspaceMode } from "#/api/conversation-metadata-store";
  *  - user_consents_to_analytics is false or null (consent not yet collected)
  */
 export const useTracking = () => {
-  const posthog = usePostHog();
-  const { data: settings } = useSettings();
-
-  // Common properties included in all tracking events
-  const commonProperties = {
-    current_url: window.location.href,
-    user_email: settings?.email || settings?.git_user_email || null,
-  };
+  // TELEMETRY DISABLED (privacy): the original implementation read PostHog and
+  // the user's settings (including user_email) and captured behaviour events.
+  // It is commented out; `track` is now a no-op so every trackX() helper below
+  // does nothing and no usage data leaves the browser.
+  // const posthog = usePostHog();
+  // const { data: settings } = useSettings();
+  //
+  // // Common properties included in all tracking events
+  // const commonProperties = {
+  //   current_url: window.location.href,
+  //   user_email: settings?.email || settings?.git_user_email || null,
+  // };
 
   /**
-   * Capture an event only when PostHog is available and the user has
-   * explicitly consented. null and false are both treated as "not consented".
+   * No-op: analytics disabled. Original behaviour (kept for restoration):
+   *   if (!posthog || settings?.user_consents_to_analytics !== true) return;
+   *   posthog.capture(event, { ...properties, ...commonProperties });
    */
-  const track = (event: string, properties: Record<string, unknown> = {}) => {
-    if (!posthog || settings?.user_consents_to_analytics !== true) return;
-    posthog.capture(event, { ...properties, ...commonProperties });
+  const track = (_event: string, _properties: Record<string, unknown> = {}) => {
+    // intentionally empty — telemetry disabled
   };
 
   const trackLoginButtonClick = ({ provider }: { provider: Provider }) => {

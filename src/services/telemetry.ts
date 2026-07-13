@@ -26,41 +26,40 @@
  */
 
 import type { PostHog } from "posthog-js";
-import packageJson from "../../package.json";
+// TELEMETRY DISABLED (privacy): packageJson was only used to tag PostHog events
+// with the package name/version. Commented out with the rest of the telemetry.
+// import packageJson from "../../package.json";
 
 const TELEMETRY_CONSENT_KEY = "openhands-telemetry-consent";
 const TELEMETRY_FIRST_USE_KEY = "openhands-telemetry-first-use";
 const TELEMETRY_SESSION_KEY = "openhands-telemetry-session";
 
-// PostHog project keys — one per deployment environment, hardcoded so they
-// are baked into the static bundle at build time and cannot drift at runtime.
-// Replace POSTHOG_STAGING_KEY with a dedicated project key once provisioned.
-const POSTHOG_PROD_KEY = "phc_BgzfxKdgsYMLFTmJqt424ZoyVHvKFfrwttLimzdYTKFK";
-const POSTHOG_STAGING_KEY = "phc_kBtz5nKmxVRRQ7HtPwr2QX9eMC5j65zE86QKocVNwb4U";
-
-// Always use the staging key unless VITE_APP_ENV is explicitly set to
-// "production" at bundle time (hardcoded in build:lib and production CI).
-// Library consumers can always override with VITE_POSTHOG_API_KEY.
-const POSTHOG_API_KEY: string =
-  (import.meta.env.VITE_POSTHOG_API_KEY as string | undefined) ||
-  (import.meta.env.VITE_APP_ENV === "production"
-    ? POSTHOG_PROD_KEY
-    : POSTHOG_STAGING_KEY);
-
-// Default to OpenHands' reverse proxy to bypass ad blockers.
-// The proxy at z.openhands.dev routes to PostHog's US region.
-// Library consumers can override this with their own proxy or direct PostHog URL.
-const POSTHOG_HOST =
-  import.meta.env.VITE_POSTHOG_HOST || "https://z.openhands.dev";
-
-// UI host is needed for PostHog features like toolbar to work correctly
-// when using a reverse proxy. Defaults to US region.
-const POSTHOG_UI_HOST =
-  import.meta.env.VITE_POSTHOG_UI_HOST || "https://us.posthog.com";
+// TELEMETRY DISABLED (privacy): the hardcoded OpenHands PostHog project keys and
+// the z.openhands.dev / us.posthog.com destinations are commented out so nothing
+// is initialized or sent. Kept here (inert) purely for restoration.
+//
+// const POSTHOG_PROD_KEY = "phc_BgzfxKdgsYMLFTmJqt424ZoyVHvKFfrwttLimzdYTKFK";
+// const POSTHOG_STAGING_KEY = "phc_kBtz5nKmxVRRQ7HtPwr2QX9eMC5j65zE86QKocVNwb4U";
+//
+// const POSTHOG_API_KEY: string =
+//   (import.meta.env.VITE_POSTHOG_API_KEY as string | undefined) ||
+//   (import.meta.env.VITE_APP_ENV === "production"
+//     ? POSTHOG_PROD_KEY
+//     : POSTHOG_STAGING_KEY);
+//
+// const POSTHOG_HOST =
+//   import.meta.env.VITE_POSTHOG_HOST || "https://z.openhands.dev";
+//
+// const POSTHOG_UI_HOST =
+//   import.meta.env.VITE_POSTHOG_UI_HOST || "https://us.posthog.com";
 
 export type TelemetryConsent = "granted" | "denied" | "pending";
 
+// TELEMETRY DISABLED (privacy): these stay `let` because the (currently
+// commented) original init code reassigns them. eslint-disable keeps them as-is.
+// eslint-disable-next-line prefer-const
 let isInitialized = false;
+// eslint-disable-next-line prefer-const
 let posthogInstance: PostHog | null = null;
 
 /**
@@ -73,31 +72,40 @@ function isBrowser(): boolean {
 /**
  * Lazily load PostHog to avoid SSR/Node.js issues.
  * PostHog is a browser-only library, so we dynamically import it only when needed.
+ *
+ * TELEMETRY DISABLED (privacy): commented out entirely — PostHog is never loaded.
  */
-async function getPostHog(): Promise<PostHog | null> {
-  if (!isBrowser()) {
-    return null;
-  }
-
-  if (posthogInstance) {
-    return posthogInstance;
-  }
-
-  try {
-    const { default: posthog } = await import("posthog-js");
-    posthogInstance = posthog;
-    return posthog;
-  } catch {
-    // Failed to load PostHog - telemetry will be disabled
-    return null;
-  }
-}
+// async function getPostHog(): Promise<PostHog | null> {
+//   if (!isBrowser()) {
+//     return null;
+//   }
+//
+//   if (posthogInstance) {
+//     return posthogInstance;
+//   }
+//
+//   try {
+//     const { default: posthog } = await import("posthog-js");
+//     posthogInstance = posthog;
+//     return posthog;
+//   } catch {
+//     // Failed to load PostHog - telemetry will be disabled
+//     return null;
+//   }
+// }
 
 /**
  * Check if telemetry is disabled via environment variable or browser setting.
  * Works in both Node.js and browser (Vite) environments.
  */
 function isDoNotTrackEnabled(): boolean {
+  // TELEMETRY DISABLED (privacy): hard opt-out. Forcing this to `true` makes
+  // getTelemetryConsent() return "denied" and short-circuits trackInstall /
+  // trackSessionStart / trackEvent, so no telemetry is ever sent regardless of
+  // env vars or browser settings. Original detection preserved below.
+  return true;
+
+  /* ORIGINAL:
   // Check Vite environment variable (browser)
   if (
     typeof import.meta !== "undefined" &&
@@ -122,6 +130,7 @@ function isDoNotTrackEnabled(): boolean {
   }
 
   return false;
+  */
 }
 
 /**
@@ -131,8 +140,15 @@ function isDoNotTrackEnabled(): boolean {
  *                          If false, start with capturing disabled (for consent-gated tracking).
  */
 async function initializePostHog(
-  enableCapturing = false,
+  _enableCapturing = false,
 ): Promise<PostHog | null> {
+  // TELEMETRY DISABLED (privacy): never initialize PostHog. Returning null makes
+  // every caller (trackInstall / trackSessionStart / trackEvent /
+  // setTelemetryConsent) no-op through its `if (!posthog) return` guard, so the
+  // SDK is never loaded and no connection to PostHog is ever opened.
+  return null;
+
+  /* ORIGINAL:
   if (isInitialized) {
     return posthogInstance;
   }
@@ -167,6 +183,7 @@ async function initializePostHog(
 
   isInitialized = true;
   return posthog;
+  */
 }
 
 /**
@@ -300,15 +317,16 @@ export async function trackInstall(): Promise<void> {
     posthog.opt_in_capturing();
   }
 
-  // Capture the install event
-  posthog.capture("canvas_install", {
-    platform: typeof navigator !== "undefined" ? navigator.platform : "unknown",
-    user_agent:
-      typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
-    referrer: typeof document !== "undefined" ? document.referrer : "",
-    url_origin: typeof window !== "undefined" ? window.location.origin : "",
-    embedded: typeof window !== "undefined" && window.self !== window.top,
-  });
+  // TELEMETRY DISABLED (privacy): do not send the anonymous install event
+  // (platform, user agent, referrer, origin, embedded flag) to PostHog.
+  // posthog.capture("canvas_install", {
+  //   platform: typeof navigator !== "undefined" ? navigator.platform : "unknown",
+  //   user_agent:
+  //     typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
+  //   referrer: typeof document !== "undefined" ? document.referrer : "",
+  //   url_origin: typeof window !== "undefined" ? window.location.origin : "",
+  //   embedded: typeof window !== "undefined" && window.self !== window.top,
+  // });
 
   // Mark as sent (stored in localStorage - persists across browser sessions)
   markFirstUseSent();
@@ -372,9 +390,10 @@ export async function trackSessionStart(): Promise<void> {
     return;
   }
 
-  posthog.capture("canvas_new_session", {
-    is_first_use: !hasFirstUseSent(),
-  });
+  // TELEMETRY DISABLED (privacy): do not send the session-start event.
+  // posthog.capture("canvas_new_session", {
+  //   is_first_use: !hasFirstUseSent(),
+  // });
 
   // Mark as sent for this session
   markSessionSent();
@@ -384,8 +403,8 @@ export async function trackSessionStart(): Promise<void> {
  * Track a custom event (respects consent).
  */
 export async function trackEvent(
-  eventName: string,
-  properties: Record<string, unknown> = {},
+  _eventName: string,
+  _properties: Record<string, unknown> = {},
 ): Promise<void> {
   if (!isTelemetryEnabled()) {
     return;
@@ -397,7 +416,8 @@ export async function trackEvent(
     return;
   }
 
-  posthog.capture(eventName, properties);
+  // TELEMETRY DISABLED (privacy): do not send custom events to PostHog.
+  // posthog.capture(_eventName, _properties);
 }
 
 /**

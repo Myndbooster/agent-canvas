@@ -1,44 +1,56 @@
 import React from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { PostHogProvider } from "posthog-js/react";
-import OptionService from "#/api/option-service/option-service.api";
-import { QUERY_KEYS, CONFIG_CACHE_OPTIONS } from "#/hooks/query/query-keys";
+// TELEMETRY DISABLED (privacy): imports below are only used by the disabled
+// PostHog provider implementation. Commented out to keep the build lint-clean.
+// import { useQueryClient } from "@tanstack/react-query";
+// import { PostHogProvider } from "posthog-js/react";
+// import OptionService from "#/api/option-service/option-service.api";
+// import { QUERY_KEYS, CONFIG_CACHE_OPTIONS } from "#/hooks/query/query-keys";
 
-const POSTHOG_BOOTSTRAP_KEY = "posthog_bootstrap";
+// const POSTHOG_BOOTSTRAP_KEY = "posthog_bootstrap";
 
-function getBootstrapIds() {
-  // Try to extract from URL hash (e.g. #distinct_id=abc&session_id=xyz)
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const distinctId = params.get("distinct_id");
-  const sessionId = params.get("session_id");
-
-  if (distinctId && sessionId) {
-    const bootstrap = { distinctID: distinctId, sessionID: sessionId };
-
-    // Persist to sessionStorage so IDs survive full-page OAuth redirects
-    sessionStorage.setItem(POSTHOG_BOOTSTRAP_KEY, JSON.stringify(bootstrap));
-
-    // Clean the hash from the URL
-    window.history.replaceState(
-      null,
-      "",
-      window.location.pathname + window.location.search,
-    );
-    return bootstrap;
-  }
-
-  // Fallback: check sessionStorage (covers return from OAuth redirect)
-  const stored = sessionStorage.getItem(POSTHOG_BOOTSTRAP_KEY);
-  if (stored) {
-    sessionStorage.removeItem(POSTHOG_BOOTSTRAP_KEY);
-    return JSON.parse(stored) as { distinctID: string; sessionID: string };
-  }
-
-  return undefined;
-}
+// TELEMETRY DISABLED (privacy): bootstrap-id extraction for PostHog is unused
+// while the provider is off.
+// function getBootstrapIds() {
+//   // Try to extract from URL hash (e.g. #distinct_id=abc&session_id=xyz)
+//   const hash = window.location.hash.substring(1);
+//   const params = new URLSearchParams(hash);
+//   const distinctId = params.get("distinct_id");
+//   const sessionId = params.get("session_id");
+//
+//   if (distinctId && sessionId) {
+//     const bootstrap = { distinctID: distinctId, sessionID: sessionId };
+//
+//     // Persist to sessionStorage so IDs survive full-page OAuth redirects
+//     sessionStorage.setItem(POSTHOG_BOOTSTRAP_KEY, JSON.stringify(bootstrap));
+//
+//     // Clean the hash from the URL
+//     window.history.replaceState(
+//       null,
+//       "",
+//       window.location.pathname + window.location.search,
+//     );
+//     return bootstrap;
+//   }
+//
+//   // Fallback: check sessionStorage (covers return from OAuth redirect)
+//   const stored = sessionStorage.getItem(POSTHOG_BOOTSTRAP_KEY);
+//   if (stored) {
+//     sessionStorage.removeItem(POSTHOG_BOOTSTRAP_KEY);
+//     return JSON.parse(stored) as { distinctID: string; sessionID: string };
+//   }
+//
+//   return undefined;
+// }
 
 export function PostHogWrapper({ children }: { children: React.ReactNode }) {
+  // TELEMETRY DISABLED (privacy): the PostHog app-analytics provider is turned
+  // off so `usePostHog()` resolves to undefined everywhere and every
+  // useTracking / usePostHogIdentify / trackError call becomes a silent no-op.
+  // No analytics events are sent to https://us.i.posthog.com. To restore, remove
+  // this early return and un-comment the original implementation below.
+  return children;
+
+  /* ---------------------------------------------------------------------------
   const queryClient = useQueryClient();
   const [posthogClientKey, setPosthogClientKey] = React.useState<string | null>(
     null,
@@ -81,4 +93,5 @@ export function PostHogWrapper({ children }: { children: React.ReactNode }) {
       {children}
     </PostHogProvider>
   );
+  --------------------------------------------------------------------------- */
 }
