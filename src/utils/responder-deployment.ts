@@ -49,6 +49,11 @@ export interface ResponderDeploymentOption {
   primaryActionKey: I18nKey;
   primaryActionTestId: string;
   action: ResponderDeploymentAction;
+  /**
+   * When true, the option is shown but not yet available — the launcher
+   * renders a disabled "Coming soon" button and never fires `action`.
+   */
+  comingSoon?: boolean;
 }
 
 /**
@@ -81,7 +86,12 @@ export function resolveResponderDeploymentOption(
           I18nKey.RESPONDER_DEPLOYMENT$OPENHANDS_CLOUD_DESCRIPTION,
         primaryActionKey: I18nKey.RESPONDER_DEPLOYMENT$OPENHANDS_CLOUD_ACTION,
         primaryActionTestId: "responder-deployment-open-openhands-cloud",
-        action: { kind: "open-url", url: OPENHANDS_CLOUD_INTEGRATIONS_URL },
+        // CLOUD NOT AVAILABLE YET: BoostersDev Cloud isn't offered, so the real
+        // "open cloud integrations" action is commented out and the option is
+        // shown as a disabled "Coming soon". Restore this when cloud launches.
+        // action: { kind: "open-url", url: OPENHANDS_CLOUD_INTEGRATIONS_URL },
+        action: { kind: "open-url", url: "" },
+        comingSoon: true,
       };
     case "user-cloud":
       throw new Error("User Cloud responder deployment is not yet supported");

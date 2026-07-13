@@ -73,7 +73,10 @@ export function ResponderDeploymentModal({
                   variant="primary"
                   className="mt-auto"
                   testId={option.primaryActionTestId}
+                  isDisabled={option.comingSoon}
                   onClick={() => {
+                    // "Coming soon" options are disabled and do nothing.
+                    if (option.comingSoon) return;
                     if (action.kind === "launch-local") {
                       onContinueLocal();
                     } else {
@@ -81,7 +84,9 @@ export function ResponderDeploymentModal({
                     }
                   }}
                 >
-                  {t(option.primaryActionKey)}
+                  {option.comingSoon
+                    ? t(I18nKey.NAV$COMING_SOON)
+                    : t(option.primaryActionKey)}
                 </BrandButton>
               </div>
             );
