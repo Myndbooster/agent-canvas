@@ -93,7 +93,7 @@ describe("ActiveBackendProvider", () => {
     let added: { id: string } | null = null;
     act(() => {
       added = result.current.addBackend({
-        name: "OpenHands Cloud",
+        name: "BoostersDev Cloud",
         host: "https://app.all-hands.dev",
         apiKey: "bearer-token",
         kind: "cloud",

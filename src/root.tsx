@@ -181,7 +181,7 @@ export const links: LinksFunction = () => [
 ];
 
 export const meta: MetaFunction = () => [
-  { title: "OpenHands" },
+  { title: "BoostersDev" },
   { name: "description", content: "Let's Start Building!" },
 ];
 

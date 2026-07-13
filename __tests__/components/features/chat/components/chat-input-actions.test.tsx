@@ -102,7 +102,7 @@ describe("ChatInputActions", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders the LLM-profile switcher inside a local OpenHands conversation", () => {
+  it("renders the LLM-profile switcher inside a local BoostersDev conversation", () => {
     useActiveConversationMock.mockReturnValue({
       data: { conversation_id: "test-conversation-id", llm_model: "gpt-4o" },
     });
@@ -191,9 +191,9 @@ describe("ChatInputActions", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders the LLM-profile switcher inside a cloud OpenHands conversation", () => {
+  it("renders the LLM-profile switcher inside a cloud BoostersDev conversation", () => {
     // /switch_profile is a real endpoint on both backends (cloud proxies
-    // POST /api/v1/app-conversations/{id}/switch_profile) — cloud OpenHands
+    // POST /api/v1/app-conversations/{id}/switch_profile) — cloud BoostersDev
     // conversations get the same live-switch picker as local (#1571 review).
     setRegisteredBackends([cloudBackend]);
     setActiveSelection({ backendId: cloudBackend.id });

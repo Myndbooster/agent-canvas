@@ -481,7 +481,7 @@ describe("stack mode routing", () => {
 describe("default constants", () => {
   it("has expected default automation repo", () => {
     expect(DEFAULT_AUTOMATION_REPO).toBe(
-      "https://github.com/OpenHands/automation",
+      "https://github.com/BoostersDev/automation",
     );
   });
 
@@ -517,7 +517,7 @@ describe("dev-with-automation CLI", () => {
     const [code] = await once(child, "exit");
 
     expect(code).toBe(0);
-    expect(output).toContain("Agent Canvas + Automation Development Stack");
+    expect(output).toContain("BoostersDev + Automation Development Stack");
     expect(output).toContain("--port");
     expect(output).toContain("--automation-ref");
     expect(output).toContain("--automation-repo");

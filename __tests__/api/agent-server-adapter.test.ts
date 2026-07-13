@@ -106,7 +106,7 @@ describe("buildStartConversationRequest", () => {
       model: "nested-model",
       api_key: "nested-key",
       base_url: "https://nested.example.com",
-      // Streaming is enabled so the OpenHands agent emits StreamingDeltaEvents.
+      // Streaming is enabled so the BoostersDev agent emits StreamingDeltaEvents.
       stream: true,
     });
     expect(payload.agent_settings.condenser).toEqual({
@@ -304,7 +304,7 @@ describe("buildStartConversationRequest", () => {
     expect(toolNames).not.toContain("task_tool_set");
   });
 
-  it("derives confirmation and security settings the same way as OpenHands", () => {
+  it("derives confirmation and security settings the same way as BoostersDev", () => {
     const payload = buildStartConversationRequest({
       settings: {
         ...DEFAULT_SETTINGS,
@@ -520,7 +520,7 @@ describe("buildStartConversationRequest", () => {
   });
 
   it("does not mirror conversation secrets onto agent_context for non-ACP conversations", () => {
-    // The OpenHands ``Agent`` reads secrets from ``secret_registry``
+    // The BoostersDev ``Agent`` reads secrets from ``secret_registry``
     // directly (no spawn-env bridging needed), so the LLM-driven path
     // must not get an extra ``agent_context.secrets`` map — that would
     // be both redundant and a surprise for any code that inspects
@@ -956,11 +956,11 @@ describe("toAppConversation", () => {
     expect(result.acp_server).toBeNull();
   });
 
-  it("ignores tags.acpserver on OpenHands conversations to prevent stray-tag bleed", () => {
+  it("ignores tags.acpserver on BoostersDev conversations to prevent stray-tag bleed", () => {
     // The agent-server's pydantic model doesn't enforce that ``acpserver``
     // is only stamped on ACP conversations. Defensively gating on
     // ``agent.kind === "ACPAgent"`` keeps a misconfigured tag from
-    // turning the sidebar of an OpenHands conversation into "Claude
+    // turning the sidebar of a BoostersDev conversation into "Claude
     // Code". Pairs with the ``llm_model`` null-out for ACP.
     const result = toAppConversation({
       ...baseInfo,
@@ -1294,7 +1294,7 @@ describe("buildStartConversationRequest — ACP discriminator", () => {
     expect(payload.agent_settings.mcp_config).toBeUndefined();
   });
 
-  it("does not include ACP-only fields in OpenHands agent settings", () => {
+  it("does not include ACP-only fields in BoostersDev agent settings", () => {
     const payload = buildStartConversationRequest({
       settings: {
         ...DEFAULT_SETTINGS,
@@ -1492,7 +1492,7 @@ describe("buildStartConversationRequest — ACP discriminator", () => {
     expect(payload.agent_settings.acp_model).toBeUndefined();
   });
 
-  it("ACP → OpenHands → ACP round trip leaves no field leakage", () => {
+  it("ACP → BoostersDev → ACP round trip leaves no field leakage", () => {
     const baseAcpSettings = {
       ...DEFAULT_SETTINGS,
       agent_settings: {

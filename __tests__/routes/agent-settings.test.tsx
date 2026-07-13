@@ -72,7 +72,7 @@ describe("AgentSettingsScreen", () => {
     toastMocks.warning.mockClear();
   });
 
-  it("renders the agent type selector defaulting to OpenHands with sub-agents toggle", async () => {
+  it("renders the agent type selector defaulting to BoostersDev with sub-agents toggle", async () => {
     vi.spyOn(SettingsService, "getSettings").mockResolvedValue(
       buildSettings({
         agent_settings: {
@@ -85,11 +85,11 @@ describe("AgentSettingsScreen", () => {
     renderAgentSettingsScreen();
     await screen.findByTestId("agent-settings-screen");
     expect(screen.getByTestId("agent-type-selector")).toBeInTheDocument();
-    // Sub-agents toggle visible on the OpenHands branch.
+    // Sub-agents toggle visible on the BoostersDev branch.
     expect(
       screen.getByTestId("agent-settings-enable-sub-agents"),
     ).toBeInTheDocument();
-    // ACP-only fields stay hidden on the OpenHands branch.
+    // ACP-only fields stay hidden on the BoostersDev branch.
     expect(screen.queryByTestId("agent-command-input")).not.toBeInTheDocument();
   });
 
@@ -117,7 +117,7 @@ describe("AgentSettingsScreen", () => {
     );
   });
 
-  it("saves enable_sub_agents when toggling on the OpenHands path", async () => {
+  it("saves enable_sub_agents when toggling on the BoostersDev path", async () => {
     const user = userEvent.setup();
     vi.spyOn(SettingsService, "getSettings").mockResolvedValue(
       buildSettings({
@@ -153,7 +153,7 @@ describe("AgentSettingsScreen", () => {
     });
   });
 
-  it("saves tool_concurrency_limit when changed on the OpenHands path", async () => {
+  it("saves tool_concurrency_limit when changed on the BoostersDev path", async () => {
     const user = userEvent.setup();
     vi.spyOn(SettingsService, "getSettings").mockResolvedValue(
       buildSettings({
@@ -461,7 +461,7 @@ describe("AgentSettingsScreen", () => {
     });
   });
 
-  it("clears ACP fields when switching back to OpenHands", async () => {
+  it("clears ACP fields when switching back to BoostersDev", async () => {
     const user = userEvent.setup();
     vi.spyOn(SettingsService, "getSettings").mockResolvedValue(
       buildSettings({

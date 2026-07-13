@@ -21,7 +21,7 @@ function keepTail(text: string, max: number): string {
 }
 
 /**
- * Build the first message for a "Debug with OpenHands" conversation started
+ * Build the first message for a "Debug with BoostersDev" conversation started
  * from a failed automation run. This is an instruction to the agent (not
  * user-facing UI copy), so it is intentionally in English and not localized.
  */

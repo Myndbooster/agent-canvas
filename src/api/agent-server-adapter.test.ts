@@ -18,7 +18,7 @@ function makeSettings(agentSettings: Settings["agent_settings"]): Settings {
 }
 
 describe("buildStartConversationRequest", () => {
-  it("marks OpenHands start requests as encrypted when MCP headers are encrypted", () => {
+  it("marks BoostersDev start requests as encrypted when MCP headers are encrypted", () => {
     const agentSettings = {
       agent_kind: "openhands",
       llm: {

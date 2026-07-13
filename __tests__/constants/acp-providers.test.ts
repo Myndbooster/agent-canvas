@@ -158,7 +158,7 @@ describe("getAcpProviderSecrets — containerized credentials", () => {
     }
   });
 
-  it("returns [] for OpenHands / custom / unknown / empty", () => {
+  it("returns [] for BoostersDev / custom / unknown / empty", () => {
     expect(getAcpProviderSecrets("openhands")).toEqual([]);
     expect(getAcpProviderSecrets(ACP_CUSTOM_PRESET_KEY)).toEqual([]);
     expect(getAcpProviderSecrets("future-acp-server")).toEqual([]);
@@ -194,7 +194,7 @@ describe("getAcpPreferredDefaultModel", () => {
     );
   });
 
-  it("returns null for OpenHands / custom / unknown", () => {
+  it("returns null for BoostersDev / custom / unknown", () => {
     expect(getAcpPreferredDefaultModel("openhands")).toBeNull();
     expect(getAcpPreferredDefaultModel(ACP_CUSTOM_PRESET_KEY)).toBeNull();
     expect(getAcpPreferredDefaultModel("future-acp-server")).toBeNull();

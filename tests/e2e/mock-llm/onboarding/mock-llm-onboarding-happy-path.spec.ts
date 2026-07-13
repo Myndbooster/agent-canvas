@@ -3,7 +3,7 @@
  *
  * Exercises the complete first-run onboarding flow end-to-end:
  *
- *   Step 0 — Choose Agent: selects OpenHands and advances.
+ *   Step 0 — Choose Agent: selects BoostersDev and advances.
  *   Step 1 — Check Backend: waits for the connected banner, advances.
  *   Step 2 — Setup LLM: fills in the mock LLM model, base URL, and API
  *            key (via "All" mode), and advances. The step persists settings

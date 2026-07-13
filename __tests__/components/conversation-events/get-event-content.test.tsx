@@ -52,7 +52,7 @@ const terminalObservationEvent: ObservationEvent = {
       hostname: "runtime",
       prefix: "",
       suffix: "",
-      working_dir: "/workspace/project/OpenHands",
+      working_dir: "/workspace/project/BoostersDev",
       py_interpreter_path: null,
     },
   },
@@ -308,7 +308,7 @@ describe("getEventContent", () => {
         content: [
           {
             type: "text",
-            text: "UI command 'open_tab' dispatched to the Agent Canvas frontend.",
+            text: "UI command 'open_tab' dispatched to the BoostersDev frontend.",
           },
         ],
         is_error: false,
@@ -323,7 +323,7 @@ describe("getEventContent", () => {
     ).toBeInTheDocument();
     // The body is exactly the acknowledgement text, not a JSON dump.
     expect(details).toBe(
-      "UI command 'open_tab' dispatched to the Agent Canvas frontend.",
+      "UI command 'open_tab' dispatched to the BoostersDev frontend.",
     );
   });
 });

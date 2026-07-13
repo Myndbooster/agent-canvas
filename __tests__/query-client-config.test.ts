@@ -51,7 +51,7 @@ describe("createAgentServerQueryClient", () => {
     const toastSpy = vi.spyOn(ToastHandlers, "displayErrorToast");
     const backend = {
       id: "cloud-expired",
-      name: "OpenHands Cloud",
+      name: "BoostersDev Cloud",
       host: "https://app.all-hands.dev",
       apiKey: "expired-token",
       kind: "cloud",

@@ -52,7 +52,7 @@ describe('checkTranslations', () => {
 
   it('does not flag allowlisted keys with identical values', () => {
     const { untranslatedKeys } = checkTranslations(
-      { BRANDING$OPENHANDS: { en: 'OpenHands', fr: 'OpenHands', ja: 'OpenHands' } },
+      { BRANDING$OPENHANDS: { en: 'BoostersDev', fr: 'BoostersDev', ja: 'BoostersDev' } },
       languages,
     );
 

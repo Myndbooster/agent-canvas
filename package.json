@@ -1,20 +1,20 @@
 {
-  "name": "@openhands/agent-canvas",
+  "name": "boostersdev",
   "version": "1.2.1",
-  "description": "Agent Canvas UI for OpenHands - run AI coding agents with a visual interface",
+  "description": "BoostersDev - run AI coding agents with a visual interface",
   "license": "MIT",
   "private": false,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenHands/agent-canvas"
+    "url": "https://myndboosters.com"
   },
-  "homepage": "https://github.com/OpenHands/agent-canvas#readme",
+  "homepage": "https://myndboosters.com",
   "bugs": {
-    "url": "https://github.com/OpenHands/agent-canvas/issues"
+    "url": "https://myndboosters.com"
   },
   "bin": {
-    "agent-canvas": "bin/agent-canvas.mjs"
+    "boostersdev": "bin/agent-canvas.mjs"
   },
   "engines": {
     "node": ">=22.12.0"

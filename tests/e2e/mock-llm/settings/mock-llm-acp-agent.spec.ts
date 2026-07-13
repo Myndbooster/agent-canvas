@@ -69,7 +69,7 @@ test.describe("mock-LLM ACP agent conversation", () => {
       }
     }
 
-    // Reset agent-server back to OpenHands via the Settings → Agent UI
+    // Reset agent-server back to BoostersDev via the Settings → Agent UI
     // + restore mock LLM profile so subsequent test suites (which expect
     // agent_kind=openhands) are not affected by our ACP configuration.
     const page = await browser.newPage();
@@ -104,7 +104,7 @@ test.describe("mock-LLM ACP agent conversation", () => {
     // seeded "default" profile through it rather than a standalone form.
     await openAgentProfileEditor(page, "default");
 
-    // ── Switch agent type from OpenHands → ACP ──
+    // ── Switch agent type from BoostersDev → ACP ──
 
     await test.step("select ACP agent type", async () => {
       await selectDropdownOption(

@@ -31,7 +31,7 @@ vi.mock("#/hooks/use-posthog-identify", () => ({
 }));
 
 vi.mock("#/hooks/use-app-title", () => ({
-  useAppTitle: () => "OpenHands",
+  useAppTitle: () => "BoostersDev",
 }));
 
 vi.mock("#/components/features/sidebar/sidebar", () => ({

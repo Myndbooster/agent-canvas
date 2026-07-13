@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ModelSelector } from "#/components/shared/modals/settings/model-selector";
 import { server } from "#/mocks/node";
 
-describe("ModelSelector — OpenHands provider display", () => {
+describe("ModelSelector — BoostersDev provider display", () => {
   let providersCount = 0;
   let verifiedCount = 0;
   let modelsCount = 0;
@@ -49,11 +49,11 @@ describe("ModelSelector — OpenHands provider display", () => {
     );
   }
 
-  it("shows OpenHands immediately for current openhands/<m> settings", async () => {
+  it("shows BoostersDev immediately for current openhands/<m> settings", async () => {
     renderWithQuery(<ModelSelector currentModel="openhands/claude-opus-4-7" />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText("LLM$PROVIDER")).toHaveValue("OpenHands");
+      expect(screen.getByLabelText("LLM$PROVIDER")).toHaveValue("BoostersDev");
     });
 
     expect(providersCount).toBe(1);

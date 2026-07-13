@@ -1,6 +1,6 @@
 # Using ACP agents
 
-Agent Canvas can drive your conversations with the built-in **OpenHands** agent or
+BoostersDev can drive your conversations with the built-in **BoostersDev** agent or
 with an external **ACP agent** — Claude Code, Codex, or Gemini CLI. This guide
 explains what ACP agents are, how to onboard one, and how to switch agents or
 models later.
@@ -9,14 +9,14 @@ models later.
 
 The [Agent Client Protocol (ACP)](https://agentclientprotocol.com/protocol/overview)
 is a standard for talking to coding agents over JSON-RPC on stdio. Instead of
-Agent Canvas calling an LLM directly, the Agent Server spawns the agent's own CLI
+BoostersDev calling an LLM directly, the Agent Server spawns the agent's own CLI
 as a subprocess and relays each turn to it. The external agent manages its own
-LLM, tools, and execution; Agent Canvas sends messages and renders what comes
+LLM, tools, and execution; BoostersDev sends messages and renders what comes
 back.
 
 ```mermaid
 flowchart LR
-    canvas["Agent Canvas<br/>(this UI)"]
+    canvas["BoostersDev<br/>(this UI)"]
     server["Agent Server"]
     acp["ACP subprocess<br/>(e.g. claude-agent-acp)"]
     llm["LLM provider<br/>(Anthropic / OpenAI / Google)"]
@@ -26,14 +26,14 @@ flowchart LR
     acp -- "API calls" --> llm
 ```
 
-The Agent Server owns the subprocess and the credentials; Agent Canvas only
+The Agent Server owns the subprocess and the credentials; BoostersDev only
 records *which* agent to run and surfaces a form for the secrets it needs. The
 agent choice is stored per backend, so switching backends can switch agents.
 
 ## Supported providers
 
 The provider list is sourced from the SDK registry
-(`openhands.sdk.settings.acp_providers`, mirrored into
+(`boostersdev.sdk.settings.acp_providers`, mirrored into
 `@openhands/typescript-client`) and enriched with Canvas UI metadata in
 [`src/constants/acp-providers.ts`](../src/constants/acp-providers.ts). Adding or
 changing a provider happens upstream in the SDK, not here.
@@ -98,8 +98,8 @@ override, not needed for normal use.
 First-time users get a four-step onboarding modal. To onboard an ACP agent:
 
 1. **Choose agent** — pick Claude Code, Codex, or Gemini CLI instead of
-   OpenHands. The choice is saved immediately to your backend's settings.
-2. **Check backend** — confirms Agent Canvas can reach the Agent Server.
+   BoostersDev. The choice is saved immediately to your backend's settings.
+2. **Check backend** — confirms BoostersDev can reach the Agent Server.
 3. **Set up credentials** — enter the provider's credentials. Beyond the API
    key (+ optional base URL), this step also collects the credentials a
    *containerized* backend needs, since a fresh container has no host login:
@@ -151,7 +151,7 @@ point Canvas at it). In short:
 # surface for current Canvas). Override SHA with a newer build.
 docker run -d --name oh-acp -p 8010:8000 -v acp-data:/workspace \
   -v "$(pwd)/tools:/canvas-tools:ro" -e OH_EXTRA_PYTHON_PATH=/canvas-tools \
-  ghcr.io/openhands/agent-server:1.28.0-python
+  ghcr.io/boostersdev/agent-server:1.28.0-python
 
 # 2. Canvas pointed at the container.
 VITE_BACKEND_BASE_URL=http://localhost:8010 npm run dev:frontend
@@ -215,7 +215,7 @@ grouping isolation is separate (agent-canvas#1016).
 
 Open **Settings → Agent** at any time:
 
-- **Agent** — switch between **OpenHands** and **ACP**.
+- **Agent** — switch between **BoostersDev** and **ACP**.
 - **Preset** — pick a built-in provider (Claude Code, Codex, Gemini CLI) or
   **Custom** to point at any other ACP server.
 - **Command** — the command line used to spawn the subprocess. Selecting a preset

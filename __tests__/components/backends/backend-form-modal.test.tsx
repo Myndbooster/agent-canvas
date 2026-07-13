@@ -236,7 +236,7 @@ describe("BackendFormModal – edit mode (BackendForm entry point)", () => {
       <TestSeed
         onMount={(ctx) => {
           backendId = ctx.addBackend({
-            name: "OpenHands Cloud",
+            name: "BoostersDev Cloud",
             host: "https://app.all-hands.dev",
             apiKey: "sk-cloud",
             kind: "cloud",
@@ -247,7 +247,7 @@ describe("BackendFormModal – edit mode (BackendForm entry point)", () => {
           mode="edit"
           backend={{
             id: backendId,
-            name: "OpenHands Cloud",
+            name: "BoostersDev Cloud",
             host: "https://app.all-hands.dev",
             apiKey: "sk-cloud",
             kind: "cloud",
@@ -259,7 +259,7 @@ describe("BackendFormModal – edit mode (BackendForm entry point)", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("edit-backend-name")).toHaveValue(
-        "OpenHands Cloud",
+        "BoostersDev Cloud",
       );
     });
 

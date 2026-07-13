@@ -19,7 +19,7 @@ import { cn } from "#/utils/utils";
  */
 export type AgentBrandIconKind = "openhands" | ACPProviderIcon;
 
-// The OpenHands wordmark renders at a 3:2 (width:height) ratio. Kept as a
+// The BoostersDev logo mark renders at a 3:2 (width:height) ratio. Kept as a
 // named constant so the conversation chip and the onboarding tile (24×16)
 // stay visually identical — see ``AgentOptionIcon`` in choose-agent-step.tsx.
 const OPENHANDS_LOGO_ASPECT_RATIO = 3 / 2;

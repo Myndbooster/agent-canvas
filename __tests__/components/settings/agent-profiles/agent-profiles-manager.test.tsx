@@ -112,7 +112,7 @@ describe("AgentProfilesManager", () => {
     expect(screen.getByText("Available Profiles")).toBeInTheDocument();
     await screen.findByText("my-openhands");
     expect(screen.getByText("my-claude")).toBeInTheDocument();
-    // OpenHands profiles show their referenced LLM profile; ACP shows the kind.
+    // BoostersDev profiles show their referenced LLM profile; ACP shows the kind.
     expect(screen.getByText("default")).toBeInTheDocument();
     expect(screen.getByText("ACP")).toBeInTheDocument();
   });

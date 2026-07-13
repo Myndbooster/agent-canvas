@@ -12,7 +12,7 @@ import { CloudSettingsLink } from "#/components/features/settings/cloud-settings
 
 const cloudBackend: Backend = {
   id: "cloud-1",
-  name: "OpenHands Cloud",
+  name: "BoostersDev Cloud",
   host: "https://app.all-hands.dev",
   apiKey: "token",
   kind: "cloud",

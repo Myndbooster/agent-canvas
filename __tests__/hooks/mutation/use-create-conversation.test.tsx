@@ -424,8 +424,8 @@ describe("useCreateConversation", () => {
   });
 
   it("keeps the profile path for an ACP `default` profile (agent_settings can't carry ACP config)", async () => {
-    // The default→agent_settings shortcut is OpenHands-only: activation is
-    // pointer-only, so global agent_settings is stale (still OpenHands) for an
+    // The default→agent_settings shortcut is BoostersDev-only: activation is
+    // pointer-only, so global agent_settings is stale (still BoostersDev) for an
     // active ACP profile — routing it via agent_settings would launch the wrong
     // agent. An ACP `default` must resolve server-side via agent_profile_id.
     listAgentProfilesMock.mockResolvedValue({

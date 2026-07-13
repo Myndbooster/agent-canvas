@@ -83,7 +83,7 @@ describe("VerificationSettingsScreen", () => {
     expect(apiKeyInput).toHaveAttribute("type", "password");
     expect(apiKeyInput).not.toBeRequired();
 
-    // The accompanying help link points users at OpenHands Cloud, mirroring
+    // The accompanying help link points users at BoostersDev Cloud, mirroring
     // the hint we already show under the LLM provider's API key field.
     const helpLink = screen.getByTestId(
       "help-link-verification.critic_api_key",

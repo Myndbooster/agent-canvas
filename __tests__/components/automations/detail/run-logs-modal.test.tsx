@@ -287,7 +287,7 @@ describe("RunLogsModal", () => {
   });
 });
 
-describe("RunLogsModal — Debug with OpenHands button", () => {
+describe("RunLogsModal — Debug with BoostersDev button", () => {
   const makeRun = (status: AutomationRunStatus): AutomationRun => ({
     id: "run-1",
     status,

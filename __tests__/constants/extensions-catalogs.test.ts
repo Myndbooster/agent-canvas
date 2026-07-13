@@ -7,7 +7,7 @@ import {
   getMcpMarketplaceCatalog,
 } from "#/utils/mcp-marketplace-utils";
 
-describe("OpenHands extensions catalogs", () => {
+describe("BoostersDev extensions catalogs", () => {
   it("hydrates the MCP marketplace from @openhands/extensions", () => {
     expect(INTEGRATION_CATALOG.length).toBeGreaterThan(0);
 

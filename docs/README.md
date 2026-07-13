@@ -1,4 +1,4 @@
-# Agent Canvas docs
+# BoostersDev docs
 
 This directory contains the project documentation.
 

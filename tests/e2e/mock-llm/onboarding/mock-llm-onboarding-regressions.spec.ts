@@ -61,7 +61,7 @@ test.describe("onboarding recent regressions", () => {
   });
 
   // Regression coverage for #1077 / PR #1089: first-run LLM setup
-  // should not default users to the OpenHands provider.
+  // should not default users to the BoostersDev provider.
 
   test("defaults the LLM setup step to OpenAI GPT-5.5", async ({
     page,
@@ -106,7 +106,7 @@ test.describe("onboarding recent regressions", () => {
     });
     await expect(
       page.getByTestId("openhands-account-help"),
-      "OpenHands account helper should stay hidden for OpenAI defaults",
+      "BoostersDev account helper should stay hidden for OpenAI defaults",
     ).toHaveCount(0);
   });
 });

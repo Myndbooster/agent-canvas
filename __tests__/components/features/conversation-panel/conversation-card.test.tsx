@@ -590,7 +590,7 @@ describe("ConversationCard", () => {
 
   describe("Agent chip", () => {
     // The agent chip is gated by the conversation panel's "Agent / model"
-    // toggle (``showLlmProfiles``) — one control for both ACP and OpenHands
+    // toggle (``showLlmProfiles``) — one control for both ACP and BoostersDev
     // cards. The renders below pass ``showLlmProfiles`` to exercise the chip;
     // the omitted-prop fallback is covered by the first two tests.
     it("hides the chip when showLlmProfiles is omitted for ACP", () => {
@@ -610,7 +610,7 @@ describe("ConversationCard", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("hides the chip when showLlmProfiles is omitted for OpenHands", () => {
+    it("hides the chip when showLlmProfiles is omitted for BoostersDev", () => {
       renderWithProviders(
         <ConversationCard
           title="Conversation 1"
@@ -743,10 +743,10 @@ describe("ConversationCard", () => {
       ).toBeInTheDocument();
     });
 
-    it("renders the OpenHands logo + model name for native conversations", () => {
-      // With the chip toggle on, OpenHands native conversations show the
-      // OpenHands logo + the raw ``agent.llm.model`` string. A stray
-      // ``acp_server`` value on an OpenHands card must not flip the icon to
+    it("renders the BoostersDev logo + model name for native conversations", () => {
+      // With the chip toggle on, BoostersDev native conversations show the
+      // BoostersDev logo + the raw ``agent.llm.model`` string. A stray
+      // ``acp_server`` value on a BoostersDev card must not flip the icon to
       // the Claude/Codex/Gemini brand mark.
       renderWithProviders(
         <ConversationCard
@@ -771,7 +771,7 @@ describe("ConversationCard", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("hides the chip for OpenHands conversations with no model", () => {
+    it("hides the chip for BoostersDev conversations with no model", () => {
       // Toggle on, but no model string and no ACP server — nothing to
       // display, so the chip collapses rather than showing a bare logo.
       renderWithProviders(

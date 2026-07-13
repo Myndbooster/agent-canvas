@@ -40,7 +40,7 @@ describe("ChooseAgentStep", () => {
     vi.spyOn(SettingsService, "saveSettings").mockResolvedValue(true);
   });
 
-  it("renders all four agent options with OpenHands marked selected by default", () => {
+  it("renders all four agent options with BoostersDev marked selected by default", () => {
     renderStep();
 
     const openhands = screen.getByTestId("onboarding-agent-option-openhands");
@@ -130,7 +130,7 @@ describe("ChooseAgentStep", () => {
     expect(onSelect).toHaveBeenLastCalledWith("openhands");
   });
 
-  it("persists agent_kind:'openhands' and advances on Next when OpenHands is selected", async () => {
+  it("persists agent_kind:'openhands' and advances on Next when BoostersDev is selected", async () => {
     const save = vi.spyOn(SettingsService, "saveSettings");
     const { onNext } = renderStep("openhands");
     const user = userEvent.setup();

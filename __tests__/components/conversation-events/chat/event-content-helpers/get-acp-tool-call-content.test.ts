@@ -13,10 +13,10 @@ const baseEvent: ACPToolCallEvent = {
   timestamp: "2026-04-16T19:32:29.828069",
   source: "agent",
   tool_call_id: "toolu_123",
-  title: "gh pr diff 490 --repo OpenHands/evaluation",
+  title: "gh pr diff 490 --repo BoostersDev/evaluation",
   tool_kind: "execute",
   status: "completed",
-  raw_input: { command: "gh pr diff 490 --repo OpenHands/evaluation" },
+  raw_input: { command: "gh pr diff 490 --repo BoostersDev/evaluation" },
   raw_output: "diff --git a/foo b/foo\n+added\n",
   content: null,
   is_error: false,
@@ -52,7 +52,7 @@ describe("getACPToolCallContent", () => {
     const content = getACPToolCallContent(baseEvent);
 
     expect(content).toContain(
-      "Command: `gh pr diff 490 --repo OpenHands/evaluation`",
+      "Command: `gh pr diff 490 --repo BoostersDev/evaluation`",
     );
     expect(content).toContain("Output:");
     expect(content).toContain("```");
@@ -157,7 +157,7 @@ describe("stripRedundantTitlePrefix", () => {
   });
 
   it("leaves a title without the redundant prefix untouched", () => {
-    // The OpenHands ACP wrapper, for example, may already emit just the
+    // The BoostersDev ACP wrapper, for example, may already emit just the
     // command. The strip should be a no-op in that case.
     expect(
       stripRedundantTitlePrefix(

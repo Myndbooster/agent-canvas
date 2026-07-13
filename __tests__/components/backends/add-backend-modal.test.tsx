@@ -234,7 +234,7 @@ describe("AddBackendModal – two-column layout", () => {
     await user.click(screen.getByTestId("add-backend-submit"));
 
     expect(await screen.findByTestId("add-backend-error")).toHaveTextContent(
-      "Agent Canvas requires agent-server 1.28.0 or newer",
+      "BoostersDev requires agent-server 1.28.0 or newer",
     );
     expect(onClose).not.toHaveBeenCalled();
   });

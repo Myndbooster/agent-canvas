@@ -21,7 +21,7 @@ import { Messages } from "#/components/conversation-events/chat/messages";
 // shows exactly once.
 
 const THOUGHT =
-  "I'll create a webpage explaining what OpenHands can do. " +
+  "I'll create a webpage explaining what BoostersDev can do. " +
   "Let me first gather accurate information from the official documentation.";
 
 const countOccurrences = (haystack: string, needle: string): number =>

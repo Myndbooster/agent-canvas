@@ -1,7 +1,7 @@
-# Containerized ACP agent-server for Agent Canvas
+# Containerized ACP agent-server for BoostersDev
 
 Run an ACP agent (Codex / Claude Code / Gemini CLI) against a **containerized**
-Agent Server and drive it from Agent Canvas, with credentials supplied through
+Agent Server and drive it from BoostersDev, with credentials supplied through
 the Canvas UI. This is the local-Docker counterpart of the cloud path — a fresh
 container has no host CLI login, so credentials come from you instead.
 
@@ -15,7 +15,7 @@ cd examples/acp-docker
 docker compose up
 ```
 
-This starts `ghcr.io/openhands/agent-server:latest-python` on
+This starts `ghcr.io/boostersdev/agent-server:latest-python` on
 `http://localhost:8010` with a persistent `acp-data` volume. The image
 pre-installs the ACP CLI wrappers and the SDK rewrites `npx -y <pkg>` to those
 pinned binaries in-pod, so Canvas can keep sending the default `npx` command
@@ -40,7 +40,7 @@ cd examples/acp-docker && docker compose up
 To pin a newer release or a current main build by hand instead:
 
 ```bash
-AGENT_SERVER_IMAGE=ghcr.io/openhands/agent-server:$(gh api repos/OpenHands/software-agent-sdk/commits/main --jq '.sha[0:7]')-python docker compose up
+AGENT_SERVER_IMAGE=ghcr.io/boostersdev/agent-server:$(gh api repos/BoostersDev/software-agent-sdk/commits/main --jq '.sha[0:7]')-python docker compose up
 ```
 
 To bake credentials into the container instead of entering them in Canvas, copy

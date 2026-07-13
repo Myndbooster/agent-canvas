@@ -17,7 +17,7 @@
  *      stamps the active profile name on client-side conversation
  *      metadata at creation and on per-conversation switches.
  *
- *   3. OpenHands provider hidden base_url preservation:
+ *   3. BoostersDev provider hidden base_url preservation:
  *      A base_url typed in Advanced view is still real profile data after
  *      switching to Basic. Re-saving from Basic without changing the model
  *      must preserve that hidden value.
@@ -330,7 +330,7 @@ test.describe("same-model profile identity", () => {
 
     // ── Verify: profile switcher shows BETA, not ALPHA ──
     await test.step("profile switcher shows the correct profile name", async () => {
-      // In a local OpenHands conversation the chat input renders the
+      // In a local BoostersDev conversation the chat input renders the
       // in-conversation LLM-profile picker, whose label is the active
       // profile name (replaces the former switch-profile-button).
       const profilePicker = page.getByTestId("chat-input-llm-profile");
@@ -362,11 +362,11 @@ test.describe("same-model profile identity", () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════
-// Test 3 — OpenHands provider hidden base_url preservation
+// Test 3 — BoostersDev provider hidden base_url preservation
 // ═══════════════════════════════════════════════════════════════════════
 
-test.describe("OpenHands provider hidden base_url preservation", () => {
-  // The public OpenHands provider model remains the profile identity, but a
+test.describe("BoostersDev provider hidden base_url preservation", () => {
+  // The public BoostersDev provider model remains the profile identity, but a
   // custom Advanced base_url is still user data. A same-model Basic save must
   // not wipe it just because the field is invisible in that view.
   const OPENHANDS_PROFILE = "openhands-basic-save-test";
@@ -395,11 +395,11 @@ test.describe("OpenHands provider hidden base_url preservation", () => {
     }
   });
 
-  test("re-saving an OpenHands profile from Basic view preserves hidden base_url", async ({
+  test("re-saving a BoostersDev profile from Basic view preserves hidden base_url", async ({
     page,
     request,
   }) => {
-    // ── Setup: create a public OpenHands profile with a custom base_url through
+    // ── Setup: create a public BoostersDev profile with a custom base_url through
     // Advanced view. The value becomes hidden after switching to Basic, but it
     // is still part of the profile unless the model changes. ──
     await routeSessionApiKey(page);

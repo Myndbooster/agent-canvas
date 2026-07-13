@@ -72,7 +72,7 @@ describe("resolvePickerKind", () => {
       ).toBe("model");
     });
 
-    it("shows the LLM-profile picker for an OpenHands conversation regardless of backend", () => {
+    it("shows the LLM-profile picker for a BoostersDev conversation regardless of backend", () => {
       // /switch_profile is a real endpoint on both backends (cloud proxies
       // POST /api/v1/app-conversations/{id}/switch_profile) — no cloud
       // restriction here.

@@ -615,7 +615,7 @@ describe("LlmSettingsLocalView", () => {
   });
 
   describe("Basic tab save", () => {
-    it("preserves hidden base_url for OpenHands models without a model change", async () => {
+    it("preserves hidden base_url for BoostersDev models without a model change", async () => {
       // Arrange — a profile has an actual advanced base_url value. Switching to
       // Basic hides it, but saving without changing the model must not wipe it.
       const user = userEvent.setup();

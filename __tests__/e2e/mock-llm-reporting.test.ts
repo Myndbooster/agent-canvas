@@ -23,10 +23,10 @@ describe("mock-LLM E2E reporting", () => {
         },
       ],
       workflowUrl:
-        "https://github.com/OpenHands/agent-canvas/actions/runs/28000401257",
+        "https://github.com/BoostersDev/agent-canvas/actions/runs/28000401257",
       commit: "82c9e1d04d62961e14742e20a4237ecd6db20ff0",
       artifactUrl:
-        "https://github.com/OpenHands/agent-canvas/actions/runs/28000401257/artifacts/7811037798",
+        "https://github.com/BoostersDev/agent-canvas/actions/runs/28000401257/artifacts/7811037798",
       title: "Mock-LLM Docker E2E Test Results",
       newFiles: [],
       markerMeta: null,

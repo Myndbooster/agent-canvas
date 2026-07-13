@@ -1,4 +1,4 @@
-# Agent Canvas — Testing Matrix
+# BoostersDev — Testing Matrix
 
 **Priority key:** P0 = must pass before any release · P1 = must pass before GA · P2 = best-effort
 
@@ -10,12 +10,12 @@ Each cell = smoke test: install → onboard → start conversation → agent rep
 
 | | **macOS** | **Linux** | **Windows** |
 |---|:---:|:---:|:---:|
-| **npm — OpenHands** | ☐ | ☐ | ☐ |
+| **npm — BoostersDev** | ☐ | ☐ | ☐ |
 | **npm — Claude Code** | ☐ | ☐ | ☐ |
 | **npm — Codex** | ☐ | ☐ | ☐ |
 | **npm — Gemini CLI** | ☐ | ☐ | ☐ |
 | **npm — Custom ACP** | ☐ | ☐ | ☐ |
-| **Docker — OpenHands** | ☐ | ☐ | ☐ |
+| **Docker — BoostersDev** | ☐ | ☐ | ☐ |
 | **Docker — Claude Code** | ☐ | ☐ | ☐ |
 | **Docker — Codex** | ☐ | ☐ | ☐ |
 | **Docker — Gemini CLI** | ☐ | ☐ | ☐ |
@@ -29,7 +29,7 @@ Requires full stack (automation backend running).
 
 | | **npm** | **Docker** |
 |---|:---:|:---:|
-| **OpenHands** | ✅ P0 | ✅ P0 |
+| **BoostersDev** | ✅ P0 | ✅ P0 |
 | **Claude Code** | ✅ P1 | ✅ P1 |
 | **Codex** | ✅ P1 | ✅ P1 |
 | **Gemini CLI** | ✅ P2 | ✅ P2 |
@@ -51,7 +51,7 @@ Each cell = create automation → dispatch run → run reaches COMPLETED → con
 
 ### npm
 
-| Feature | OpenHands | Claude Code | Codex | Gemini CLI |
+| Feature | BoostersDev | Claude Code | Codex | Gemini CLI |
 |---|:---:|:---:|:---:|:---:|
 | Onboarding | ☐ | ☐ | ☐ | ☐ |
 | Conversation — start, resume, history | ☐ | ☐ | ☐ | ☐ |
@@ -68,7 +68,7 @@ Each cell = create automation → dispatch run → run reaches COMPLETED → con
 
 ### Docker
 
-| Feature | OpenHands | Claude Code | Codex | Gemini CLI |
+| Feature | BoostersDev | Claude Code | Codex | Gemini CLI |
 |---|:---:|:---:|:---:|:---:|
 | Onboarding | ☐ | ☐ | ☐ | ☐ |
 | Conversation — start, resume, history | ☐ | ☐ | ☐ | ☐ |
@@ -90,8 +90,8 @@ Each cell = create automation → dispatch run → run reaches COMPLETED → con
 | Suite | Install | OS | Agents | Automations |
 |---|---|---|---|---|
 | `vitest` (unit) | — | Linux | — | partial |
-| `test:e2e:mock-llm` | npm | Linux | OpenHands, ACP (mock) | ✅ full |
-| `test:e2e:mock-llm:docker` | Docker | Linux | OpenHands, ACP (mock) | ✅ full |
-| `test:e2e:live` | npm | Linux | OpenHands | ❌ |
+| `test:e2e:mock-llm` | npm | Linux | BoostersDev, ACP (mock) | ✅ full |
+| `test:e2e:mock-llm:docker` | Docker | Linux | BoostersDev, ACP (mock) | ✅ full |
+| `test:e2e:live` | npm | Linux | BoostersDev | ❌ |
 
 **Not yet covered by CI:** real ACP credentials (Claude Code / Codex / Gemini), macOS, public auth mode, subscription login paths, Windows.

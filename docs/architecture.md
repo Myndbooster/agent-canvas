@@ -1,17 +1,17 @@
-# Agent Canvas architecture
+# BoostersDev architecture
 
-Agent Canvas is a React and TypeScript frontend for running and monitoring OpenHands agents across local, remote, and hosted environments. It is adapted from the OpenHands frontend to talk directly to the OpenHands Agent Server and related automation services.
+BoostersDev is a React and TypeScript frontend for running and monitoring BoostersDev agents across local, remote, and hosted environments. It is adapted from the BoostersDev frontend to talk directly to the BoostersDev Agent Server and related automation services.
 
 ## System boundaries
 
-Agent Canvas is responsible for:
+BoostersDev is responsible for:
 
 - Rendering the agent conversation, terminal, browser, files, settings, and automation UI.
 - Managing frontend state for conversations, backend selection, settings, profiles, and local metadata.
-- Translating UI actions into OpenHands Agent Server API calls.
+- Translating UI actions into BoostersDev Agent Server API calls.
 - Packaging the UI both as a standalone app and as library entrypoints for host applications.
 
-Agent Canvas is not responsible for:
+BoostersDev is not responsible for:
 
 - Executing agent actions directly.
 - Providing the sandbox or workspace isolation layer.
@@ -20,13 +20,13 @@ Agent Canvas is not responsible for:
 
 ## Runtime services
 
-The primary backend is the [OpenHands Agent Server](https://github.com/OpenHands/software-agent-sdk/tree/main/openhands-agent-server/openhands/agent_server). Agent Canvas can connect to one or more Agent Server instances and switch between them from the UI.
+The primary backend is the [BoostersDev Agent Server](https://github.com/BoostersDev/software-agent-sdk/tree/main/boostersdev-agent-server/boostersdev/agent_server). BoostersDev can connect to one or more Agent Server instances and switch between them from the UI.
 
 Optional runtime services include:
 
 - An ingress service that routes frontend, Agent Server, and automation traffic behind one local origin.
 - An Automation Server for scheduled or event-triggered agent runs.
-- OpenHands Cloud APIs for hosted sandbox and organization workflows.
+- BoostersDev Cloud APIs for hosted sandbox and organization workflows.
 
 The development launchers expose runtime service information through `VITE_RUNTIME_SERVICES_INFO`. The frontend forwards that information into new conversations as an agent context suffix so agents can use the correct URLs instead of guessing ports.
 
@@ -44,7 +44,7 @@ The most important source areas are:
 
 ## Runtime modes
 
-Agent Canvas supports several modes:
+BoostersDev supports several modes:
 
 | Mode | Purpose |
 |---|---|
@@ -53,11 +53,11 @@ Agent Canvas supports several modes:
 | `npm run dev:automation` | Starts the local stack with an automation backend. |
 | `npm run dev:mock` | Runs the frontend against MSW mocks for UI development and tests. |
 | `npm run build` | Builds the standalone application. |
-| `npm run build:lib` | Builds library entrypoints for embedding Agent Canvas components. |
+| `npm run build:lib` | Builds library entrypoints for embedding BoostersDev components. |
 
 ## Packaging and distribution
 
-The npm package is `@openhands/agent-canvas`. The package exposes:
+The npm package is `boostersdev`. The package exposes:
 
 - The `agent-canvas` binary for launching a local stack.
 - A standalone app build.

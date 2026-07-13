@@ -50,7 +50,7 @@ function renderHost() {
 function seedCloudBackend() {
   const backend = {
     id: "cloud-backend",
-    name: "OpenHands Cloud",
+    name: "BoostersDev Cloud",
     host: "https://app.all-hands.dev",
     apiKey: "cloud-session-key",
     kind: "cloud" as const,

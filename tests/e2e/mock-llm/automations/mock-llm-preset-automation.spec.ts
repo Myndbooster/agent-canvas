@@ -1,7 +1,7 @@
 /**
  * Mock-LLM E2E test: preset automation card → slash command → skill activation.
  *
- * The `slack-standup-digest` skill ships in the public OpenHands extensions
+ * The `slack-standup-digest` skill ships in the public BoostersDev extensions
  * repo with `triggers: ["/standup-digest:setup"]`. The frontend bundles
  * public skills from the `@openhands/extensions` npm package and passes
  * them directly in `agent_context.skills` at conversation-start, so the

@@ -26,10 +26,10 @@ Both modes still start the ingress proxy; the proxy only routes to the services 
 The dev stack uses `uvx` to run a temporary `agent-server`
 installation on `127.0.0.1:18000` and points the frontend at it. It isolates
 conversation persistence by setting separate `OH_CONVERSATIONS_PATH`,
-`OH_BASH_EVENTS_DIR`, and `OH_VSCODE_PORT` values under `.openhands-dev/`, and
+`OH_BASH_EVENTS_DIR`, and `OH_VSCODE_PORT` values under `.boostersdev-dev/`, and
 keeps its tmux sockets under `~/.openhands/agent-canvas/tmux` (via
 `TMUX_TMPDIR`), so it does not collide with other local or cloud-backed
-OpenHands sessions. If `$HOME` is on a filesystem that does not support Unix
+BoostersDev sessions. If `$HOME` is on a filesystem that does not support Unix
 domain sockets (some devcontainers, NFS/CIFS homes), set the standard
 `TMUX_TMPDIR` env var to a local path such as `/tmp` and the dev stack will use
 it instead.
@@ -69,7 +69,7 @@ OH_AGENT_SERVER_GIT_REF=abc1234 npm run dev
 OH_AGENT_SERVER_VERSION=1.18.0 npm run dev
 ```
 
-`OH_AGENT_SERVER_LOCAL_PATH` must be an absolute path to a `software-agent-sdk` checkout containing the `openhands-agent-server`, `openhands-sdk`, `openhands-tools`, and `openhands-workspace` workspace packages. The agent-server itself is rebuilt from local source on each start (`uvx --reinstall`); the other workspace packages are installed editable, so their source changes take effect without a rebuild.
+`OH_AGENT_SERVER_LOCAL_PATH` must be an absolute path to a `software-agent-sdk` checkout containing the `boostersdev-agent-server`, `boostersdev-sdk`, `boostersdev-tools`, and `boostersdev-workspace` workspace packages. The agent-server itself is rebuilt from local source on each start (`uvx --reinstall`); the other workspace packages are installed editable, so their source changes take effect without a rebuild.
 
 ### Other useful overrides
 
@@ -124,7 +124,7 @@ npm run test -- __tests__/api/agent-server-config.test.ts __tests__/scripts/dev-
 
 ## CSS isolation and host-app customization
 
-The standalone app and the exported provider/root wrapper now scope all bundled CSS under a dedicated shell element with the `data-agent-server-ui` attribute. That means Tailwind utilities, HeroUI component styles, xterm styles, and local CSS only apply inside the OpenHands UI subtree instead of leaking into a host app.
+The standalone app and the exported provider/root wrapper now scope all bundled CSS under a dedicated shell element with the `data-agent-server-ui` attribute. That means Tailwind utilities, HeroUI component styles, xterm styles, and local CSS only apply inside the BoostersDev UI subtree instead of leaking into a host app.
 
 ### Embedding strategy
 

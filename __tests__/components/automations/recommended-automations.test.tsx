@@ -459,7 +459,7 @@ describe("recommended automations", () => {
     );
   });
 
-  it("opens the OpenHands Cloud integrations page without launching when the cloud option is chosen", () => {
+  it("opens the BoostersDev Cloud integrations page without launching when the cloud option is chosen", () => {
     const openSpy = vi.spyOn(window, "open").mockReturnValue(null);
 
     renderLauncher();

@@ -16,7 +16,7 @@ export const FIELD_HELP_LINKS: Record<
     href: string;
     /** Skip rendering the schema description separately when the help text already includes it. */
     hideDescription?: boolean;
-    /** Optional trailing copy rendered after the link (e.g. " tab of OpenHands Cloud."). */
+    /** Optional trailing copy rendered after the link (e.g. " tab of BoostersDev Cloud."). */
     suffixKey?: string;
   }
 > = {

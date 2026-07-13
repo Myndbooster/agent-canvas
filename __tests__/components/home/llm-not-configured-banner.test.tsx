@@ -90,7 +90,7 @@ describe("LlmNotConfiguredBanner", () => {
   });
 
   it("warns the user when no LLM API key is set (the skip-onboarding case)", async () => {
-    // Arrange: an OpenHands agent with no key — what "Skip for now" leaves.
+    // Arrange: a BoostersDev agent with no key — what "Skip for now" leaves.
     vi.spyOn(SettingsService, "getSettings").mockResolvedValue(
       buildSettings({ llm_api_key_set: false }),
     );

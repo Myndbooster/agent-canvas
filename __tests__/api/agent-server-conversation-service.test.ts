@@ -465,7 +465,7 @@ describe("AgentServerConversationService", () => {
       await expect(
         AgentServerConversationService.updateConversationRepository(
           "missing-conv",
-          "OpenHands/agent-canvas",
+          "BoostersDev/agent-canvas",
         ),
       ).rejects.toThrow("Conversation missing-conv was not found");
     });

@@ -52,7 +52,7 @@ const storedAcp = {
 } as unknown as AgentProfile;
 
 describe("mergeAgentProfileSaveInput", () => {
-  it("preserves unmodeled OpenHands fields under the edited ones", () => {
+  it("preserves unmodeled BoostersDev fields under the edited ones", () => {
     const edited: AgentProfileSaveInput = {
       agent_kind: "openhands",
       enable_sub_agents: true,

@@ -955,7 +955,7 @@ function CloudLoginColumn({
   const handleLoginSuccess = (apiKey: string) => {
     onConnected(
       {
-        name: "OpenHands Cloud",
+        name: "BoostersDev Cloud",
         host: normalizeHost(effectiveHost),
         apiKey,
         kind: "cloud",

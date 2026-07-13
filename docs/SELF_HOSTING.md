@@ -1,10 +1,10 @@
-# Self-Hosting Agent Canvas on a Virtual Machine
+# Self-Hosting BoostersDev on a Virtual Machine
 
-This guide walks through running Agent Canvas on a virtual machine (VM) so you
+This guide walks through running BoostersDev on a virtual machine (VM) so you
 can reach it from anywhere via a browser.
 
 > [!WARNING]
-> Agent Canvas drives an agent that can read and write the filesystem of the
+> BoostersDev drives an agent that can read and write the filesystem of the
 > machine it runs on, execute shell commands, and reach the network. Anyone who
 > can talk to the agent server can do the same. **Treat the VM as you would any
 > machine that holds production credentials**, and lock it down before exposing
@@ -14,9 +14,9 @@ can reach it from anywhere via a browser.
 
 1. **Provision a machine** — a cloud VM or dedicated hardware (Mac Mini, NUC, etc.)
 2. **Secure the machine** — lock down the network firewall
-3. **Run Agent Canvas** — generate a key with `openssl rand -base64 32`, then `export LOCAL_BACKEND_API_KEY=<key>` and `npx @openhands/agent-canvas --public`
+3. **Run BoostersDev** — generate a key with `openssl rand -base64 32`, then `export LOCAL_BACKEND_API_KEY=<key>` and `npx boostersdev --public`
 4. **(Optional) Get a domain** — point a domain at the machine with nginx + Let's Encrypt for TLS
-5. **(Optional) Connect locally** — add the remote as a backend in your local Agent Canvas
+5. **(Optional) Connect locally** — add the remote as a backend in your local BoostersDev
 
 ## Details
 
@@ -40,7 +40,7 @@ flowchart LR
     user -- "HTTPS / 443" --> nginx
 ```
 
-`npx @openhands/agent-canvas --public` spins up the static frontend server,
+`npx boostersdev --public` spins up the static frontend server,
 the agent server, and the automation backend, fronted by an ingress proxy on
 `127.0.0.1:8000` that routes by path. nginx only needs to know about that
 single ingress port.
@@ -92,7 +92,7 @@ the agent (step 3) and access the UI through an SSH tunnel. If you also want
 to reach it from a browser without tunneling, you'll open ports 80 and 443
 in step 4.
 
-## 3. Run Agent Canvas
+## 3. Run BoostersDev
 
 Install the prerequisites on the machine. On Ubuntu:
 
@@ -106,11 +106,11 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 On macOS (Mac Mini, etc.) install Node and `uv` via `brew` instead.
 
-Start Agent Canvas in public mode:
+Start BoostersDev in public mode:
 
 ```bash
 export LOCAL_BACKEND_API_KEY=$(openssl rand -base64 32)   # generate once; store securely
-npx @openhands/agent-canvas --public
+npx boostersdev --public
 ```
 
 Using `export` keeps the key out of the process list (`ps aux`). The
@@ -127,7 +127,7 @@ To keep the service running after your SSH session ends, use a process manager.
 
 ```bash
 export LOCAL_BACKEND_API_KEY=<your-saved-key>
-tmux new-session -d -s canvas 'npx @openhands/agent-canvas --public'
+tmux new-session -d -s canvas 'npx boostersdev --public'
 # Reconnect later with: tmux attach -t canvas
 ```
 
@@ -137,12 +137,12 @@ Create `/etc/systemd/system/agent-canvas.service`:
 
 ```ini
 [Unit]
-Description=Agent Canvas
+Description=BoostersDev
 After=network.target
 
 [Service]
 Environment=LOCAL_BACKEND_API_KEY=<your-key>
-ExecStart=npx @openhands/agent-canvas --public
+ExecStart=npx boostersdev --public
 Restart=on-failure
 RestartSec=5
 
@@ -259,14 +259,14 @@ If you see `502 Bad Gateway`, the app on `127.0.0.1:8000` is down — check
 whether the `npx` process is still running.
 
 Open `https://canvas.example.com/` in a browser, enter your
-`LOCAL_BACKEND_API_KEY`, and confirm that you land in Agent Canvas.
+`LOCAL_BACKEND_API_KEY`, and confirm that you land in BoostersDev.
 
-## 5. (Optional) Connect your local Agent Canvas to the remote machine
+## 5. (Optional) Connect your local BoostersDev to the remote machine
 
-If you already run Agent Canvas locally, you can register the remote machine
+If you already run BoostersDev locally, you can register the remote machine
 as an additional backend and switch between local and remote from the UI.
 
-1. In your local Agent Canvas, open **Manage backends** → **Add a backend**:
+1. In your local BoostersDev, open **Manage backends** → **Add a backend**:
    - **Host Name** — anything memorable, e.g. `my-vm`.
    - **Host** — the URL from step 4, e.g. `https://canvas.example.com`.
      If using an SSH tunnel instead, use `http://localhost:8000`.

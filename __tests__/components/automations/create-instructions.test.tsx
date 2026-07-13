@@ -44,7 +44,7 @@ vi.mock("react-i18next", () => ({
 
     return (
       <>
-        Start a new conversation and tell OpenHands to{" "}
+        Start a new conversation and tell BoostersDev to{" "}
         {components?.example
           ? React.cloneElement(
               components.example,

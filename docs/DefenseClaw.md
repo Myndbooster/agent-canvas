@@ -1,8 +1,8 @@
-# Integrating DefenseClaw with Agent Canvas
+# Integrating DefenseClaw with BoostersDev
 
-[DefenseClaw](https://github.com/cisco-ai-defense/defenseclaw) is a security governance layer for agentic AI runtimes — it scans skills and MCP servers before they run, inspects LLM traffic at runtime, and produces durable audit evidence. This guide explains how to run DefenseClaw alongside the [OpenHands Agent Server](https://github.com/OpenHands/software-agent-sdk/tree/main/openhands-agent-server) that powers Agent Canvas, without making any code-level changes to either project.
+[DefenseClaw](https://github.com/cisco-ai-defense/defenseclaw) is a security governance layer for agentic AI runtimes — it scans skills and MCP servers before they run, inspects LLM traffic at runtime, and produces durable audit evidence. This guide explains how to run DefenseClaw alongside the [BoostersDev Agent Server](https://github.com/BoostersDev/software-agent-sdk/tree/main/boostersdev-agent-server) that powers BoostersDev, without making any code-level changes to either project.
 
-> **Status:** DefenseClaw is purpose-built around the OpenClaw runtime and its TypeScript plugin hooks. The integration described here targets the lowest-friction overlap points — skill injection, LLM proxying, CLI scanning, and audit export — that work without modifying Agent Canvas or DefenseClaw source code. [Future work](#future-work-code-level-extensions) describes deeper hooks that would require code changes.
+> **Status:** DefenseClaw is purpose-built around the OpenClaw runtime and its TypeScript plugin hooks. The integration described here targets the lowest-friction overlap points — skill injection, LLM proxying, CLI scanning, and audit export — that work without modifying BoostersDev or DefenseClaw source code. [Future work](#future-work-code-level-extensions) describes deeper hooks that would require code changes.
 
 ---
 
@@ -10,8 +10,8 @@
 
 ```mermaid
 flowchart TD
-    UI["Agent Canvas (browser)"]
-    AS["OpenHands Agent Server\nlocalhost:18000"]
+    UI["BoostersDev (browser)"]
+    AS["BoostersDev Agent Server\nlocalhost:18000"]
     GP["DefenseClaw Guardrail Proxy\nlocalhost:4000"]
     LLM["LLM Provider"]
     GW["DefenseClaw Gateway Sidecar\nlocalhost:18970"]
@@ -30,7 +30,7 @@ flowchart TD
 
 **Shared concepts:**
 
-| Agent Canvas / Agent Server | DefenseClaw equivalent |
+| BoostersDev / Agent Server | DefenseClaw equivalent |
 |---|---|
 | Skills (`.agents/skills/`) | Skills (scanned by `cisco-ai-skill-scanner` + CodeGuard) |
 | MCP servers | MCP servers (scanned by `cisco-ai-mcp-scanner`) |
@@ -44,7 +44,7 @@ flowchart TD
 
 | Component | Version |
 |---|---|
-| Agent Canvas / Agent Server | Current `main` |
+| BoostersDev / Agent Server | Current `main` |
 | Python | 3.10+ |
 | Go | 1.26.2+ (for DefenseClaw gateway) |
 | DefenseClaw | Latest release |
@@ -75,9 +75,9 @@ Start the Go gateway sidecar (keep this running alongside the Agent Server):
 defenseclaw-gateway start
 ```
 
-### 2. Start Agent Canvas
+### 2. Start BoostersDev
 
-Follow the standard [Agent Canvas quickstart](../README.md). The integration steps below assume the Agent Server is reachable at `http://localhost:18000`.
+Follow the standard [BoostersDev quickstart](../README.md). The integration steps below assume the Agent Server is reachable at `http://localhost:18000`.
 
 ---
 
@@ -85,7 +85,7 @@ Follow the standard [Agent Canvas quickstart](../README.md). The integration ste
 
 ### A. Load the CodeGuard Skill
 
-DefenseClaw ships a ready-made OpenHands skill — `skills/codeguard/SKILL.md` — that teaches the agent the CodeGuard security rules. When the skill is active, the agent writes code that avoids the patterns DefenseClaw blocks at scan time (hardcoded secrets, `os.system()`, string-interpolated SQL, weak crypto, path traversal, etc.).
+DefenseClaw ships a ready-made BoostersDev skill — `skills/codeguard/SKILL.md` — that teaches the agent the CodeGuard security rules. When the skill is active, the agent writes code that avoids the patterns DefenseClaw blocks at scan time (hardcoded secrets, `os.system()`, string-interpolated SQL, weak crypto, path traversal, etc.).
 
 **Install the skill into a user or project skill directory:**
 
@@ -111,9 +111,9 @@ The Agent Server loads skills from these directories automatically at conversati
 
 The DefenseClaw guardrail proxy runs on `localhost:4000` and acts as an OpenAI-compatible reverse proxy. Pointing the Agent Server's LLM calls through it causes every prompt and completion to be inspected — in observe mode (log only) or action mode (block on policy violations).
 
-**Configure the LLM base URL in Agent Canvas:**
+**Configure the LLM base URL in BoostersDev:**
 
-Open the Agent Canvas settings panel → select your active backend → under **LLM settings**, set **Base URL** to:
+Open the BoostersDev settings panel → select your active backend → under **LLM settings**, set **Base URL** to:
 
 ```
 http://localhost:4000
@@ -131,7 +131,7 @@ export OH_LLM__BASE_URL="http://localhost:4000"
 npm run dev
 ```
 
-> Consult the Agent Server [settings schema](https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-agent-server/openhands/agent_server/settings_router.py) for the exact environment variable name used in your deployment.
+> Consult the Agent Server [settings schema](https://github.com/BoostersDev/software-agent-sdk/blob/main/boostersdev-agent-server/boostersdev/agent_server/settings_router.py) for the exact environment variable name used in your deployment.
 
 **Start the guardrail in observe mode (safe default) or action mode:**
 
@@ -166,7 +166,7 @@ defenseclaw skill list
 
 The scanner applies `cisco-ai-skill-scanner` rules plus CodeGuard static analysis and emits a verdict (`PASS`, `WARN`, `BLOCK`) with per-finding details. HIGH and CRITICAL findings block skill use in action mode.
 
-**Workflow recommendation:** Add `defenseclaw skill scan <skill-dir>` as a pre-commit or CI step in repositories that ship skills for Agent Canvas.
+**Workflow recommendation:** Add `defenseclaw skill scan <skill-dir>` as a pre-commit or CI step in repositories that ship skills for BoostersDev.
 
 ---
 
@@ -245,11 +245,11 @@ The TUI panels cover:
 
 ## Future Work: Code-Level Extensions
 
-The following integrations would require changes to Agent Canvas, the Agent Server, or DefenseClaw, but would significantly deepen the security posture.
+The following integrations would require changes to BoostersDev, the Agent Server, or DefenseClaw, but would significantly deepen the security posture.
 
 ### 1. Native `SecurityAnalyzer` hook
 
-The OpenHands SDK exposes a [`SecurityAnalyzer`](https://docs.openhands.dev/sdk/arch/security.md) interface. A custom implementation could call DefenseClaw's `/api/v1/inspect/tool` endpoint before every tool invocation — mirroring the inspection the OpenClaw TypeScript plugin performs. This would gate bash commands, file writes, and other tool calls through DefenseClaw's four-stage inspection pipeline (regex, Cisco AI Defense cloud rules, LLM judge, OPA policy) before they execute.
+The BoostersDev SDK exposes a [`SecurityAnalyzer`](https://myndboosters.com) interface. A custom implementation could call DefenseClaw's `/api/v1/inspect/tool` endpoint before every tool invocation — mirroring the inspection the OpenClaw TypeScript plugin performs. This would gate bash commands, file writes, and other tool calls through DefenseClaw's four-stage inspection pipeline (regex, Cisco AI Defense cloud rules, LLM judge, OPA policy) before they execute.
 
 ```python
 # Sketch — not yet implemented
@@ -267,15 +267,15 @@ class DefenseClawSecurityAnalyzer(SecurityAnalyzer):
 
 ### 2. Skill install pipeline integration
 
-The Agent Server's `skills_service.py` (`service_install_skill`) runs skill validation during install. A pre-install hook that calls `defenseclaw skill scan` and fails the install on HIGH/CRITICAL findings would enforce a mandatory scan gate — no skill reaches the agent without passing DefenseClaw's scanner. This change would live in `openhands-agent-server`.
+The Agent Server's `skills_service.py` (`service_install_skill`) runs skill validation during install. A pre-install hook that calls `defenseclaw skill scan` and fails the install on HIGH/CRITICAL findings would enforce a mandatory scan gate — no skill reaches the agent without passing DefenseClaw's scanner. This change would live in `boostersdev-agent-server`.
 
 ### 3. Hooks integration
 
 The Agent Server loads `.openhands/hooks.json` from the workspace. An `on_conversation_end` hook that runs `defenseclaw codeguard scan <workspace>` and writes findings to a structured report file would give per-session security evidence without manual operator intervention.
 
-### 4. Agent Canvas security dashboard
+### 4. BoostersDev security dashboard
 
-A dedicated panel in the Agent Canvas UI that queries DefenseClaw's gateway REST API (`GET /alerts`, `GET /enforce/blocked`) would surface guardrail findings inline with the conversation view — correlating blocked prompts or tool calls with the agent turn that triggered them.
+A dedicated panel in the BoostersDev UI that queries DefenseClaw's gateway REST API (`GET /alerts`, `GET /enforce/blocked`) would surface guardrail findings inline with the conversation view — correlating blocked prompts or tool calls with the agent turn that triggered them.
 
 ### 5. Agent Server → DefenseClaw audit bridge
 
@@ -294,10 +294,10 @@ DefenseClaw's registry system (`defenseclaw registry add`) ingests external skil
 - [DefenseClaw API Reference](https://github.com/cisco-ai-defense/defenseclaw/blob/main/docs/API.md)
 - [DefenseClaw Guardrail Architecture](https://github.com/cisco-ai-defense/defenseclaw/blob/main/docs/GUARDRAIL.md)
 - [DefenseClaw CodeGuard Skill](https://github.com/cisco-ai-defense/defenseclaw/blob/main/skills/codeguard/SKILL.md)
-- [OpenHands Agent Server](https://github.com/OpenHands/software-agent-sdk/tree/main/openhands-agent-server)
-- [OpenHands SDK Security Analyzer](https://docs.openhands.dev/sdk/arch/security.md)
-- [Agent Canvas Self-Hosting](../SELF_HOSTING.md)
+- [BoostersDev Agent Server](https://github.com/BoostersDev/software-agent-sdk/tree/main/boostersdev-agent-server)
+- [BoostersDev SDK Security Analyzer](https://myndboosters.com)
+- [BoostersDev Self-Hosting](../SELF_HOSTING.md)
 
 ---
 
-_This document was created by an AI agent (OpenHands) on behalf of the user._
+_This document was created by an AI agent (BoostersDev) on behalf of the user._

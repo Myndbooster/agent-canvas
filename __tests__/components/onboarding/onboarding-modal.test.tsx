@@ -90,7 +90,7 @@ vi.mock("#/components/features/backends/device-flow-auth", async () => {
           "data-testid": `${testIdRoot}-login-button`,
           onClick: () => onSuccess("cloud-session-key"),
         },
-        "Login with OpenHands Cloud",
+        "Login with BoostersDev Cloud",
       ),
   };
 });
@@ -168,7 +168,7 @@ async function completeAgentStep(user: ReturnType<typeof userEvent.setup>) {
 function seedCloudBackend() {
   const backend = {
     id: "cloud-backend",
-    name: "OpenHands Cloud",
+    name: "BoostersDev Cloud",
     host: "https://app.all-hands.dev",
     apiKey: "cloud-session-key",
     kind: "cloud" as const,
@@ -351,7 +351,7 @@ describe("OnboardingModal", () => {
 
   it("dismisses the onboarding modal immediately after Cloud login in locked-to-Cloud mode without showing the next step", async () => {
     // Regression for hieptl's flicker report on PR #1389: after logging
-    // into OpenHands Cloud in locked-to-Cloud mode, the onboarding modal
+    // into BoostersDev Cloud in locked-to-Cloud mode, the onboarding modal
     // used to advance to the Choose Agent slide (the "next window"),
     // then get torn down by the root first-run gate, then briefly
     // remounted by OnboardingHost — producing a visible flicker. Cloud
@@ -525,7 +525,7 @@ describe("OnboardingModal", () => {
     vi.stubEnv("VITE_LOCK_TO_CLOUD", "https://app.all-hands.dev");
     const lockedCloud = {
       id: "locked-cloud",
-      name: "OpenHands Cloud",
+      name: "BoostersDev Cloud",
       host: "https://app.all-hands.dev/",
       apiKey: "cloud-token",
       kind: "cloud" as const,
@@ -721,7 +721,7 @@ describe("OnboardingModal", () => {
     await user.keyboard("{Escape}");
 
     // Assert: neither dismisses the flow nor marks onboarding completed
-    // (https://github.com/OpenHands/agent-canvas/issues/1085); the modal
+    // (https://github.com/BoostersDev/agent-canvas/issues/1085); the modal
     // only closes via explicit actions (Skip / launch).
     expect(onClose).not.toHaveBeenCalled();
     expect(screen.getByTestId("onboarding-modal")).toBeInTheDocument();

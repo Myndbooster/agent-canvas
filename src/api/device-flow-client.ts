@@ -83,7 +83,7 @@ async function makeCloudRequest(
   // (to app.all-hands.dev) is blocked here. Throwing before the fetch guarantees no
   // request ever leaves the browser for OpenHands' servers. Original preserved below.
   throw new DeviceFlowError(
-    "OpenHands Cloud login is disabled in this deployment.",
+    "BoostersDev Cloud login is disabled in this deployment.",
     "disabled",
   );
 

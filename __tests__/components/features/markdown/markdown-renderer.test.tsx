@@ -219,7 +219,7 @@ describe("MarkdownRenderer", () => {
       // The exact snippet from the bug report.
       const md = [
         "> [!WARNING]",
-        "> This project is in sandbox phase. It may be vibecoded, untested, or out of date. OpenHands takes no responsibility for the code or its support. [Learn more](https://github.com/OpenHands/incubator-program).",
+        "> This project is in sandbox phase. It may be vibecoded, untested, or out of date. BoostersDev takes no responsibility for the code or its support. [Learn more](https://github.com/BoostersDev/incubator-program).",
       ].join("\n");
 
       render(<MarkdownRenderer includeStandard>{md}</MarkdownRenderer>);
@@ -231,7 +231,7 @@ describe("MarkdownRenderer", () => {
       // The inline link inside the alert body still renders as an anchor.
       const link = alert.querySelector("a");
       expect(link?.getAttribute("href")).toBe(
-        "https://github.com/OpenHands/incubator-program",
+        "https://github.com/BoostersDev/incubator-program",
       );
     });
 

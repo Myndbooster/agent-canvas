@@ -95,7 +95,7 @@ describe("useSettingsNavItems", () => {
 
     const { result } = renderHook(() => useSettingsNavItems());
 
-    // Agent profiles are available on cloud too (OpenHands #15060), so every
+    // Agent profiles are available on cloud too (BoostersDev #15060), so every
     // OSS item is present; only the `/settings` LLM-Profiles rename stays
     // local-only, so on cloud every item is passed through unchanged.
     expect(result.current).toEqual(
@@ -125,7 +125,7 @@ describe("useSettingsNavItems", () => {
 
   it("derives the ACP-disable from the active agent profile, not global settings", () => {
     useConfigMock.mockReturnValue({ data: createConfig() });
-    // Global settings still say OpenHands, but the active profile is ACP —
+    // Global settings still say BoostersDev, but the active profile is ACP —
     // the active profile wins (activate is pointer-only, #1571).
     useSettingsMock.mockReturnValue({ data: openHandsSettings });
     useActiveAgentProfileMock.mockReturnValue({

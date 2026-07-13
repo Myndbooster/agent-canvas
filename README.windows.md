@@ -1,6 +1,6 @@
 # Windows quickstart (PowerShell)
 
-This doc contains **Windows-specific** command syntax for running Agent Canvas with the **Docker sandbox**.
+This doc contains **Windows-specific** command syntax for running BoostersDev with the **Docker sandbox**.
 
 For the main install options and overall context, see [README.md](./README.md).
 
@@ -12,16 +12,16 @@ For the main install options and overall context, see [README.md](./README.md).
 - A host directory for `PROJECTS_PATH` containing the project folders you want the agent to access (create it before starting the container)
 
 ```powershell
-docker pull ghcr.io/openhands/agent-canvas:1.2.1 # x-release-please-version
+docker pull ghcr.io/boostersdev/agent-canvas:1.2.1 # x-release-please-version
 
 $env:PROJECTS_PATH = Join-Path $HOME "projects"  # directory containing your project folders
-New-Item -ItemType Directory -Force -Path $env:PROJECTS_PATH, (Join-Path $env:USERPROFILE ".openhands") | Out-Null
+New-Item -ItemType Directory -Force -Path $env:PROJECTS_PATH, (Join-Path $env:USERPROFILE ".boostersdev") | Out-Null
 
 docker run -it --rm `
   -p 8000:8000 `
-  -v "$($env:USERPROFILE)\.openhands:/home/openhands/.openhands" `
+  -v "$($env:USERPROFILE)\.boostersdev:/home/boostersdev/.boostersdev" `
   -v "$($env:PROJECTS_PATH):/projects" `
-  ghcr.io/openhands/agent-canvas:1.2.1 # x-release-please-version
+  ghcr.io/boostersdev/agent-canvas:1.2.1 # x-release-please-version
 ```
 
 The agent will be able to access any project under `PROJECTS_PATH`.
