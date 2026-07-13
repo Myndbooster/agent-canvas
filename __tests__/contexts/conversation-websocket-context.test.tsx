@@ -291,6 +291,137 @@ describe("ConversationWebSocketProvider — conversation-scoped event store", ()
     expect(useConversationStore.getState().selectedTab).toBe("browser");
   });
 
+  const renderMainProvider = (conversationId: string) =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <ConversationWebSocketProvider
+          conversationId={conversationId}
+          conversationUrl="http://localhost/api"
+        >
+          <div />
+        </ConversationWebSocketProvider>
+      </QueryClientProvider>,
+    );
+
+  const agentMessageEvent = (id: string, text: string) => ({
+    id,
+    timestamp: new Date().toISOString(),
+    source: "agent",
+    llm_message: { role: "assistant", content: [{ type: "text", text }] },
+    activated_microagents: [],
+    extended_content: [],
+  });
+
+  it("loads the preview URL from an agent chat message announcing the server", async () => {
+    renderMainProvider("conv-msg-preview");
+    await waitFor(() => expect(wsCapture.mainOnMessage).not.toBeNull());
+
+    act(() => {
+      useConversationStore.getState().setSelectedTab("files");
+    });
+
+    // The agent backgrounds the server and only reports the URL in prose.
+    act(() => {
+      wsCapture.mainOnMessage!({
+        data: JSON.stringify(
+          agentMessageEvent(
+            "evt-msg-1",
+            "The dev server is running. Preview URL: http://localhost:5173/",
+          ),
+        ),
+      });
+    });
+
+    await waitFor(() =>
+      expect(useBrowserStore.getState().previewUrl).toBe(
+        "http://localhost:5173/",
+      ),
+    );
+    expect(useConversationStore.getState().selectedTab).toBe("browser");
+  });
+
+  it("loads the preview URL from a bash command (e.g. a curl verify step)", async () => {
+    renderMainProvider("conv-cmd-preview");
+    await waitFor(() => expect(wsCapture.mainOnMessage).not.toBeNull());
+
+    act(() => {
+      useConversationStore.getState().setSelectedTab("files");
+    });
+
+    // Backgrounded server: the URL never hits stdout, only the verify command.
+    act(() => {
+      wsCapture.mainOnMessage!({
+        data: JSON.stringify({
+          id: "evt-bash-act-1",
+          timestamp: new Date().toISOString(),
+          source: "agent",
+          tool_name: "terminal",
+          tool_call_id: "call-bash-act-1",
+          thought: [],
+          action: {
+            kind: "ExecuteBashAction",
+            command:
+              'curl -s -o /dev/null -w "%{http_code}" http://localhost:5173/index.html',
+            is_input: false,
+          },
+        }),
+      });
+    });
+
+    await waitFor(() =>
+      expect(useBrowserStore.getState().previewUrl).toBe(
+        "http://localhost:5173/index.html",
+      ),
+    );
+    expect(useConversationStore.getState().selectedTab).toBe("browser");
+  });
+
+  it("ignores a localhost URL in the user's own message", async () => {
+    renderMainProvider("conv-msg-user");
+    await waitFor(() => expect(wsCapture.mainOnMessage).not.toBeNull());
+
+    act(() => {
+      wsCapture.mainOnMessage!({
+        data: JSON.stringify({
+          id: "evt-msg-user-1",
+          timestamp: new Date().toISOString(),
+          source: "user",
+          llm_message: {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "is it running on http://localhost:5173/ ?",
+              },
+            ],
+          },
+          activated_microagents: [],
+          extended_content: [],
+        }),
+      });
+    });
+
+    expect(useBrowserStore.getState().previewUrl).toBe("");
+  });
+
+  it("ignores a localhost URL mentioned without a running-state keyword", async () => {
+    renderMainProvider("conv-msg-nokeyword");
+    await waitFor(() => expect(wsCapture.mainOnMessage).not.toBeNull());
+
+    act(() => {
+      wsCapture.mainOnMessage!({
+        data: JSON.stringify(
+          agentMessageEvent(
+            "evt-msg-2",
+            "The config maps the API base to http://localhost:5173/.",
+          ),
+        ),
+      });
+    });
+
+    expect(useBrowserStore.getState().previewUrl).toBe("");
+  });
+
   it("keeps events that arrived after history when re-entering the same conversation", async () => {
     // Arrange: open conversation A, then receive an agent reply over the socket
     // that is not part of the cached REST history page.

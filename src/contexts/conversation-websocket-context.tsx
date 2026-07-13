@@ -25,6 +25,7 @@ import {
   isAgentServerEvent,
   isAgentErrorEvent,
   isUserMessageEvent,
+  isMessageEvent,
   isActionEvent,
   isConversationStateUpdateEvent,
   isFullStateConversationStateUpdateEvent,
@@ -115,6 +116,31 @@ function extractMessageEventText(
     )
     .map((part) => part.text)
     .join("");
+}
+
+// Words that indicate a running server, gating dev-server-URL detection in
+// agent chat text. Without this, a loopback URL merely mentioned in passing
+// (e.g. "Vite defaults to http://localhost:5173") could hijack the preview.
+const PREVIEW_INTENT_RE =
+  /\b(run(?:ning|s)?|serv(?:e|es|ing|ed)|start(?:ed|ing|s)?|listening|preview|available|reachable|live|open|visit|view)\b/i;
+
+/**
+ * Detect a dev-server URL in `text` and, if found, load it into the Browser
+ * panel. Shared by the terminal-output and agent-message detection paths.
+ * Reveals the Browser tab only on the first detection so the panel isn't
+ * forced open again after the user navigates away.
+ */
+function applyDetectedPreviewUrl(text: string): void {
+  const detectedUrl = detectDevServerUrl(text);
+  if (!detectedUrl) return;
+
+  const browserStore = useBrowserStore.getState();
+  const wasEmpty = !browserStore.previewUrl;
+  const previewUrl = transformVSCodeUrl(detectedUrl) ?? detectedUrl;
+  if (previewUrl !== browserStore.previewUrl) {
+    browserStore.setPreviewUrl(previewUrl);
+    if (wasEmpty) revealConversationTab("browser");
+  }
 }
 
 export function ConversationWebSocketProvider({
@@ -578,6 +604,13 @@ export function ConversationWebSocketProvider({
           // Handle ExecuteBashAction events - add command as input to terminal
           if (isExecuteBashActionEvent(event)) {
             appendInput(event.action.command);
+
+            // A dev-server start/verify/open step often embeds the URL in the
+            // command itself (e.g. `curl http://localhost:5173/…`, `xdg-open
+            // http://localhost:3000`). Backgrounded servers print nothing to
+            // stdout, so the command is frequently the only place the URL
+            // appears — detect it here too. Restricted to loopback URLs.
+            applyDetectedPreviewUrl(event.action.command);
           }
 
           // Handle ExecuteBashObservation events - add output to terminal
@@ -593,18 +626,22 @@ export function ConversationWebSocketProvider({
             // local URL in the terminal output, load it in the Browser tab.
             // This is the only path that works for ACP agents (Claude Code),
             // which don't emit BrowserObservation/canvas_ui events.
-            const detectedUrl = detectDevServerUrl(textContent);
-            if (detectedUrl) {
-              const browserStore = useBrowserStore.getState();
-              const wasEmpty = !browserStore.previewUrl;
-              const previewUrl = transformVSCodeUrl(detectedUrl) ?? detectedUrl;
-              if (previewUrl !== browserStore.previewUrl) {
-                browserStore.setPreviewUrl(previewUrl);
-                // Auto-open the Browser tab only on first detection, so the
-                // panel isn't forced back open every time the user closes it.
-                if (wasEmpty) revealConversationTab("browser");
-              }
-            }
+            applyDetectedPreviewUrl(textContent);
+          }
+
+          // Also detect the preview URL from the agent's own chat message.
+          // When the agent starts a dev server in the background and only
+          // reports the URL in prose (e.g. "Preview URL: http://localhost:5173/"),
+          // it never lands in terminal output — the message is the only signal.
+          // Gated on a running-state keyword so a URL merely mentioned in
+          // passing doesn't hijack the preview, and on source "agent" so the
+          // user's own messages are never used.
+          if (
+            isMessageEvent(event) &&
+            event.source === "agent" &&
+            PREVIEW_INTENT_RE.test(extractMessageEventText(event))
+          ) {
+            applyDetectedPreviewUrl(extractMessageEventText(event));
           }
 
           // Handle BrowserObservation events - update browser store with screenshot

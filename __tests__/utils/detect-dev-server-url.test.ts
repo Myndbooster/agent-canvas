@@ -52,4 +52,12 @@ describe("detectDevServerUrl", () => {
   it("ignores non-loopback URLs", () => {
     expect(detectDevServerUrl("Deployed to https://example.com")).toBeNull();
   });
+
+  it("extracts the URL from a curl verify command", () => {
+    expect(
+      detectDevServerUrl(
+        'curl -s -o /dev/null -w "%{http_code}" http://localhost:5173/index.html',
+      ),
+    ).toBe("http://localhost:5173/index.html");
+  });
 });

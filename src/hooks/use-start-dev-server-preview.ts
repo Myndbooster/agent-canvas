@@ -15,7 +15,9 @@ export const START_DEV_SERVER_PROMPT =
   "Inspect the project (for example package.json scripts or the framework's " +
   "config) to find the correct dev or start command, run it in the background " +
   "so it keeps running, and print the local URL (for example " +
-  "http://localhost:5173). If a dev server is already running, just tell me the URL.";
+  "http://localhost:5173). If a dev server is already running, just tell me the URL. " +
+  "Once the server responds, end your reply with a line exactly like " +
+  "`Preview URL: http://localhost:PORT/` so the preview loads automatically.";
 
 /**
  * Sends the user-initiated "start dev server / preview" instruction to the
