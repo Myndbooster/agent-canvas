@@ -67,9 +67,9 @@ export function ConversationTabs({
   useEffect(() => {
     const handlePanelVisibilityChange = () => {
       if (isRightPanelShown) {
-        // If no tab is selected, default to files tab
+        // If no tab is selected, default to the browser tab
         if (!selectedTab) {
-          onTabChange("files");
+          onTabChange("browser");
         }
       }
     };

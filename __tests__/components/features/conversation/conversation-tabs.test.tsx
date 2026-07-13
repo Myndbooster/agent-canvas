@@ -58,7 +58,9 @@ vi.mock("#/hooks/query/use-unified-vscode-url", () => ({
   useUnifiedVSCodeUrl: () => ({
     data: { url: "http://localhost:8001", error: null },
     isLoading: false,
-    refetch: vi.fn().mockResolvedValue({ data: { url: "http://localhost:8001" } }),
+    refetch: vi
+      .fn()
+      .mockResolvedValue({ data: { url: "http://localhost:8001" } }),
   }),
 }));
 
@@ -198,11 +200,12 @@ describe("ConversationTabs localStorage behavior", () => {
       expect(storedState).not.toHaveProperty("rightPanelShown");
     });
 
-    it("should close panel when clicking the same active tab", async () => {
+    it("keeps the panel open when re-clicking the active tab (pure switcher)", async () => {
       mockConversationId = REAL_CONVERSATION_ID;
       const user = userEvent.setup();
 
-      // Arrange: Panel is open with editor tab selected
+      // The tabbed panel is the always-visible main area now, so re-clicking
+      // the active tab no longer collapses it.
       useConversationStore.setState({
         selectedTab: "files",
         isRightPanelShown: true,
@@ -213,12 +216,13 @@ describe("ConversationTabs localStorage behavior", () => {
         wrapper: createWrapper(REAL_CONVERSATION_ID),
       });
 
-      // Act: Click the editor tab again
-      const editorTab = screen.getByTestId("conversation-tab-files");
-      await user.click(editorTab);
+      // Act: Click the active tab again
+      const filesTab = screen.getByTestId("conversation-tab-files");
+      await user.click(filesTab);
 
-      // Assert: Panel should be closed (in-memory only).
-      expect(useConversationStore.getState().hasRightPanelToggled).toBe(false);
+      // Assert: Panel stays open; tab stays selected.
+      expect(useConversationStore.getState().hasRightPanelToggled).toBe(true);
+      expect(useConversationStore.getState().selectedTab).toBe("files");
 
       // localStorage must NOT carry the drawer-open state — that's
       // session-only by design.

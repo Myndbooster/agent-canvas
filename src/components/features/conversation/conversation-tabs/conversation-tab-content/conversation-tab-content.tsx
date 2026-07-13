@@ -29,7 +29,7 @@ export function ConversationTabContent() {
 
   const activeTab = useMemo(
     () =>
-      TAB_CONFIG[selectedTab as keyof typeof TAB_CONFIG] ?? TAB_CONFIG.files,
+      TAB_CONFIG[selectedTab as keyof typeof TAB_CONFIG] ?? TAB_CONFIG.browser,
     [selectedTab],
   );
 

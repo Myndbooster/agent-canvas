@@ -31,18 +31,15 @@ export function useSelectConversationTab() {
   };
 
   /**
-   * Selects a tab with proper panel visibility handling.
-   * - If clicking the same active tab while panel is open, closes the panel
-   * - If clicking a different tab or panel is closed, opens panel and selects tab
+   * Selects a tab. The tabbed panel is always visible on desktop (it's the
+   * main area), so this is a pure content switcher — it no longer collapses
+   * the panel when the active tab is re-clicked. On mobile it just ensures the
+   * panel is shown.
    */
   const selectTab = (tab: ConversationTab) => {
-    if (selectedTab === tab && isRightPanelShown) {
-      setHasRightPanelToggled(false);
-    } else {
-      onTabChange(tab);
-      if (!isRightPanelShown) {
-        setHasRightPanelToggled(true);
-      }
+    onTabChange(tab);
+    if (!isRightPanelShown) {
+      setHasRightPanelToggled(true);
     }
   };
 
@@ -59,10 +56,10 @@ export function useSelectConversationTab() {
   };
 
   /**
-   * Checks if a specific tab is currently active (selected and panel is visible).
+   * Checks if a specific tab is currently selected. The tabbed panel is always
+   * visible on desktop, so this no longer depends on panel visibility.
    */
-  const isTabActive = (tab: ConversationTab) =>
-    isRightPanelShown && selectedTab === tab;
+  const isTabActive = (tab: ConversationTab) => selectedTab === tab;
 
   return {
     selectTab,

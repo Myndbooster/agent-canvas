@@ -50,8 +50,9 @@ describe("useSelectConversationTab", () => {
       expect(storedState).not.toHaveProperty("rightPanelShown");
     });
 
-    it("should close panel when clicking the same active tab", () => {
-      // Arrange: Panel is open with editor tab selected
+    it("keeps the panel open when re-clicking the active tab (pure switcher)", () => {
+      // The tabbed panel is the always-visible main area now, so re-clicking
+      // the active tab no longer collapses anything.
       useConversationStore.setState({
         selectedTab: "files",
         isRightPanelShown: true,
@@ -60,18 +61,14 @@ describe("useSelectConversationTab", () => {
 
       const { result } = renderHook(() => useSelectConversationTab());
 
-      // Act: Click the same tab again
       act(() => {
         result.current.selectTab("files");
       });
 
-      // Assert: Panel should be closed (in-memory only).
-      expect(useConversationStore.getState().hasRightPanelToggled).toBe(false);
+      expect(useConversationStore.getState().hasRightPanelToggled).toBe(true);
+      expect(useConversationStore.getState().selectedTab).toBe("files");
 
-      // The drawer-close shouldn't have written to localStorage at all
-      // (session-only behavior). If anything is persisted, it's just the
-      // pre-existing tab selection from earlier writes — never a
-      // `rightPanelShown` field.
+      // Never persists a `rightPanelShown` field (session-only behavior).
       const raw = localStorage.getItem(
         `conversation-state-${TEST_CONVERSATION_ID}`,
       );
@@ -101,9 +98,7 @@ describe("useSelectConversationTab", () => {
 
       // Verify localStorage was updated
       const storedState = JSON.parse(
-        localStorage.getItem(
-          `conversation-state-${TEST_CONVERSATION_ID}`,
-        )!,
+        localStorage.getItem(`conversation-state-${TEST_CONVERSATION_ID}`)!,
       );
       expect(storedState.selectedTab).toBe("terminal");
     });
@@ -124,8 +119,9 @@ describe("useSelectConversationTab", () => {
       expect(result.current.isTabActive("files")).toBe(true);
     });
 
-    it("should return false when tab is selected but panel is not visible", () => {
-      // Arrange: Editor tab selected but panel is closed
+    it("stays active regardless of panel visibility (panel always shown on desktop)", () => {
+      // isTabActive is now purely about the selected tab — the tabbed panel is
+      // always visible on desktop, so it no longer depends on isRightPanelShown.
       useConversationStore.setState({
         selectedTab: "files",
         isRightPanelShown: false,
@@ -134,8 +130,7 @@ describe("useSelectConversationTab", () => {
 
       const { result } = renderHook(() => useSelectConversationTab());
 
-      // Assert: Editor tab should not be active
-      expect(result.current.isTabActive("files")).toBe(false);
+      expect(result.current.isTabActive("files")).toBe(true);
     });
 
     it("should return false when different tab is selected", () => {
@@ -174,9 +169,7 @@ describe("useSelectConversationTab", () => {
 
       // Verify localStorage was updated
       const storedState = JSON.parse(
-        localStorage.getItem(
-          `conversation-state-${TEST_CONVERSATION_ID}`,
-        )!,
+        localStorage.getItem(`conversation-state-${TEST_CONVERSATION_ID}`)!,
       );
       expect(storedState.selectedTab).toBe("browser");
     });
@@ -201,9 +194,7 @@ describe("useSelectConversationTab", () => {
 
       // Verify localStorage was updated
       const storedState = JSON.parse(
-        localStorage.getItem(
-          `conversation-state-${TEST_CONVERSATION_ID}`,
-        )!,
+        localStorage.getItem(`conversation-state-${TEST_CONVERSATION_ID}`)!,
       );
       expect(storedState.selectedTab).toBe(null);
     });

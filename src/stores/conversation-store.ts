@@ -103,17 +103,13 @@ export const useConversationStore = create<ConversationStore>()(
     (set) => ({
       // Initial state.
       //
-      // The right-side drawer (`isRightPanelShown` / `hasRightPanelToggled`)
-      // is intentionally *session-only* state: it always starts closed on
-      // app load (or on opening a fresh/existing conversation after a
-      // restart), but it survives in-app navigation because the Zustand
-      // store stays alive across React Router transitions. Persisting the
-      // open/closed state in localStorage made the panel feel sticky in
-      // a way users didn't expect — they want a clean, focused chat view
-      // when they come back to the app and only want the panel back when
-      // they themselves opened it during the current session.
-      isRightPanelShown: false,
-      selectedTab: "files" as ConversationTab,
+      // The tabbed panel is the always-visible main area on desktop and the
+      // Browser tab is preselected, so `isRightPanelShown`/`hasRightPanelToggled`
+      // both start `true` (see `ConversationMain`, which no longer collapses on
+      // desktop). These remain session-only (not persisted): on mobile the
+      // full-page `/panel` route drives them, and desktop keeps them true.
+      isRightPanelShown: true,
+      selectedTab: "browser" as ConversationTab,
       images: [],
       files: [],
       imagesMarkedUploadAsFile: [],
@@ -125,7 +121,7 @@ export const useConversationStore = create<ConversationStore>()(
       shouldShownAgentLoading: false,
       submittedMessage: null,
       shouldHideSuggestions: false,
-      hasRightPanelToggled: false,
+      hasRightPanelToggled: true,
       planContent: null,
       conversationMode: getInitialConversationMode(),
       subConversationTaskId: null,

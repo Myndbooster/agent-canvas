@@ -16949,7 +16949,7 @@
     "ca": "No s'ha carregat cap URL"
   },
   "BROWSER$NO_PAGE_LOADED": {
-    "en": "No preview yet. Once your app's dev server is running it appears here automatically — or type a URL above to load one.",
+    "en": "No preview yet. Use \"Start dev server\" to have the agent run your app here — or type a URL above to load one.",
     "ja": "まだページは読み込まれていません。BoostersDevにURLを開くよう指示してください。例: \"Open https://example.com\"",
     "zh-CN": "尚未加载页面。请使用BoostersDev打开网址。示例：\"Open https://example.com\"",
     "zh-TW": "尚未載入頁面。請指示 BoostersDev 開啟網址。範例：\"Open https://example.com\"",
@@ -16981,6 +16981,23 @@
     "ca": "Introduïu un URL",
     "tr": "Bir URL girin",
     "uk": "Введіть URL-адресу"
+  },
+  "BROWSER$START_DEV_SERVER": {
+    "en": "Start dev server",
+    "ja": "開発サーバーを起動",
+    "zh-CN": "启动开发服务器",
+    "zh-TW": "啟動開發伺服器",
+    "ko-KR": "개발 서버 시작",
+    "no": "Start utviklingsserver",
+    "ar": "تشغيل خادم التطوير",
+    "de": "Dev-Server starten",
+    "fr": "Démarrer le serveur de dev",
+    "it": "Avvia il server di sviluppo",
+    "pt": "Iniciar servidor de desenvolvimento",
+    "es": "Iniciar servidor de desarrollo",
+    "ca": "Inicia el servidor de desenvolupament",
+    "tr": "Geliştirme sunucusunu başlat",
+    "uk": "Запустити сервер розробки"
   },
   "USER$AVATAR_PLACEHOLDER": {
     "en": "user avatar placeholder",

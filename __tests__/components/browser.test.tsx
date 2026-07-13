@@ -27,6 +27,13 @@ vi.mock("react-i18next", async () => {
   };
 });
 
+const mockStartDevServerPreview = vi.fn();
+vi.mock("#/hooks/use-start-dev-server-preview", () => ({
+  useStartDevServerPreview: () => ({
+    startDevServerPreview: mockStartDevServerPreview,
+  }),
+}));
+
 import { BrowserPanel } from "#/components/features/browser/browser";
 import { useBrowserStore } from "#/stores/browser-store";
 
@@ -57,6 +64,17 @@ describe("Browser", () => {
     expect(screen.getByTestId("browser-chrome-url")).toHaveValue(
       "https://example.com",
     );
+  });
+
+  it("shows the Start-dev-server button in the empty state and sends on click", () => {
+    useBrowserStore.setState({ screenshotSrc: "", previewUrl: "" });
+
+    render(<BrowserPanel />);
+
+    const button = screen.getByTestId("start-dev-server-button");
+    expect(button).toBeInTheDocument();
+    fireEvent.click(button);
+    expect(mockStartDevServerPreview).toHaveBeenCalledTimes(1);
   });
 
   it("keeps the chrome bar height and disables open-in-new-tab when empty", () => {

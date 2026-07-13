@@ -46,7 +46,7 @@ export interface ConversationState {
 }
 
 const DEFAULT_CONVERSATION_STATE: ConversationState = {
-  selectedTab: "files",
+  selectedTab: "browser",
   unpinnedTabs: [],
   conversationMode: "code",
   subConversationTaskId: null,

@@ -281,8 +281,13 @@ export function buildRuntimeServicesSystemSuffix(): string | undefined {
 }
 
 /**
- * Instruction, appended to every agent's system prompt, telling it to start
- * the user's web dev server after frontend changes and surface its local URL.
+ * Instruction, appended to every agent's system prompt, telling it HOW to start
+ * the user's web dev server so the built-in Browser preview can pick it up.
+ *
+ * This is request-driven, not proactive: the user starts the preview (e.g. via
+ * the "Start dev server" button in the Browser tab, which sends an explicit
+ * message) — the agent should not spin up a server on its own on every edit,
+ * since the workspace may not even be a web project.
  *
  * Unlike {@link buildRuntimeServicesSystemSuffix} (dev-stack only) this is
  * unconditional: it must reach production/static builds and, crucially, the
@@ -298,13 +303,17 @@ export function buildRuntimeServicesSystemSuffix(): string | undefined {
 export function buildDevServerSystemSuffix(): string {
   return [
     "<WEB_PREVIEW>",
-    "The user is working inside Agent Canvas, which has a built-in Browser tab",
-    "that shows a live, interactive preview of their running web app. Whenever",
-    "you create or modify a web project (Vite, Next.js, Create React App, Astro,",
-    "plain static site, etc.), make sure its dev server is running so the preview",
-    "appears.",
+    "Agent Canvas has a built-in Browser tab that shows a live, interactive",
+    "preview of the user's running web app. WHEN THE USER ASKS you to start or",
+    "preview their app (for example via the 'Start dev server' button, which",
+    "sends you a message), first inspect the project to find how to run it, then",
+    "start its dev server. Do NOT start a dev server proactively on your own —",
+    "the workspace may not be a web project.",
     "",
     "Rules for starting it:",
+    "* First INSPECT THE PROJECT to find the right command — e.g. read",
+    "  package.json 'scripts' (dev/start/serve) or the framework's config",
+    "  (Vite, Next.js, Create React App, Astro, plain static site, etc.).",
     "* Start the dev server DETACHED / in the BACKGROUND so your tool call",
     "  returns immediately — a foreground `npm run dev` blocks and the preview",
     "  will never appear. For example:",

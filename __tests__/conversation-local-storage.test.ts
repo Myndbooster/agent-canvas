@@ -29,7 +29,7 @@ describe("conversation localStorage utilities", () => {
       const state = getConversationState("task-uuid-123");
 
       expect(state.conversationMode).toBe("code");
-      expect(state.selectedTab).toBe("files");
+      expect(state.selectedTab).toBe("browser");
       expect(
         localStorage.getItem(
           `${LOCAL_STORAGE_KEYS.CONVERSATION_STATE}-task-uuid-123`,
@@ -158,7 +158,7 @@ describe("conversation localStorage utilities", () => {
       const state = getConversationState(conversationId);
 
       expect(state.subConversationTaskId).toBeNull();
-      expect(state.selectedTab).toBe("files");
+      expect(state.selectedTab).toBe("browser");
       expect(state.unpinnedTabs).toEqual([]);
     });
 
@@ -195,7 +195,7 @@ describe("conversation localStorage utilities", () => {
       const state = getConversationState(conversationId);
 
       expect(state.subConversationTaskId).toBe("task-123");
-      expect(state.selectedTab).toBe("files");
+      expect(state.selectedTab).toBe("browser");
       expect(state.unpinnedTabs).toEqual([]);
     });
 
@@ -214,7 +214,7 @@ describe("conversation localStorage utilities", () => {
 
       const state = getConversationState(conversationId);
 
-      expect(state.selectedTab).toBe("files");
+      expect(state.selectedTab).toBe("browser");
     });
 
     it("filters obsolete tabs out of stored unpinnedTabs (changes / editor / served / app)", () => {

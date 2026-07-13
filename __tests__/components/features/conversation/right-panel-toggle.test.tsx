@@ -44,65 +44,9 @@ describe("RightPanelToggle", () => {
     });
   });
 
-  it("should render the toggle button", () => {
+  it("renders nothing on desktop (both panels are always visible)", () => {
     render(<RightPanelToggle />);
-    expect(screen.getByTestId("right-panel-toggle")).toBeInTheDocument();
-  });
-
-  it("should hide the panel when clicked while panel is open", async () => {
-    const user = userEvent.setup();
-
-    render(<RightPanelToggle />);
-
-    const button = screen.getByTestId("right-panel-toggle");
-    await user.click(button);
-
-    const storeState = useConversationStore.getState();
-    expect(storeState.hasRightPanelToggled).toBe(false);
-
-    const raw = localStorage.getItem(`conversation-state-${CONVERSATION_ID}`);
-    if (raw !== null) {
-      expect(JSON.parse(raw)).not.toHaveProperty("rightPanelShown");
-    }
-  });
-
-  it("should show the panel when clicked while panel is hidden", async () => {
-    const user = userEvent.setup();
-
-    useConversationStore.setState({
-      isRightPanelShown: false,
-      hasRightPanelToggled: false,
-    });
-
-    render(<RightPanelToggle />);
-
-    const button = screen.getByTestId("right-panel-toggle");
-    await user.click(button);
-
-    const storeState = useConversationStore.getState();
-    expect(storeState.hasRightPanelToggled).toBe(true);
-
-    const raw = localStorage.getItem(`conversation-state-${CONVERSATION_ID}`);
-    if (raw !== null) {
-      expect(JSON.parse(raw)).not.toHaveProperty("rightPanelShown");
-    }
-  });
-
-  it("should have aria-pressed attribute reflecting panel state on desktop", () => {
-    const { unmount } = render(<RightPanelToggle />);
-    expect(screen.getByTestId("right-panel-toggle")).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-
-    unmount();
-
-    useConversationStore.setState({ isRightPanelShown: false });
-    render(<RightPanelToggle />);
-    expect(screen.getByTestId("right-panel-toggle")).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
+    expect(screen.queryByTestId("right-panel-toggle")).not.toBeInTheDocument();
   });
 
   it("navigates to the full-screen panel route on mobile", async () => {

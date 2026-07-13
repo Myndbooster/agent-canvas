@@ -17,15 +17,14 @@ vi.mock("#/hooks/use-conversation-id", () => ({
   }),
 }));
 
-
-
 // Mock lazy-loaded components
 vi.mock("#/routes/files-tab", () => ({
   default: () => <div data-testid="files-tab-content">Files Tab Content</div>,
 }));
 
 // Control for lazy loading test
-let pendingBrowserTab: { promise: Promise<void>; resolve: () => void } | null = null;
+let pendingBrowserTab: { promise: Promise<void>; resolve: () => void } | null =
+  null;
 vi.mock("#/routes/browser-tab", () => ({
   default: () => {
     if (pendingBrowserTab) {
@@ -60,7 +59,9 @@ describe("ConversationTabContent", () => {
   const createWrapper = () => {
     return ({ children }: { children: React.ReactNode }) => (
       <MemoryRouter initialEntries={["/conversations/test-conversation-id"]}>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
       </MemoryRouter>
     );
   };
@@ -99,13 +100,13 @@ describe("ConversationTabContent", () => {
       });
     });
 
-    it("should render files tab when selectedTab is null", async () => {
+    it("should render the browser tab when selectedTab is null", async () => {
       setSelectedTab(null);
 
       render(<ConversationTabContent />, { wrapper: createWrapper() });
 
       await waitFor(() => {
-        expect(screen.getByTestId("files-tab-content")).toBeInTheDocument();
+        expect(screen.getByTestId("browser-tab-content")).toBeInTheDocument();
       });
     });
   });

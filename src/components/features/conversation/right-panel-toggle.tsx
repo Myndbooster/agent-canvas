@@ -15,12 +15,12 @@ interface RightPanelToggleProps {
 }
 
 /**
- * Toggle button for showing/hiding the right panel.
+ * Toggle button for the tab panel.
  *
- * Placed in the chat header so users can always restore the panel,
- * even when it's hidden. The open/closed state lives in the in-memory
- * Zustand store and is intentionally not persisted across full reloads —
- * see the comment in `useConversationStore` for the rationale.
+ * Desktop no longer collapses the tab panel — it's the always-visible main
+ * area, and the chat is the resizable right column (see `ConversationMain`) —
+ * so this renders nothing on desktop. On mobile it navigates to the full-page
+ * `/panel` route.
  */
 export function RightPanelToggle({ className }: RightPanelToggleProps) {
   const { t } = useTranslation("openhands");
@@ -28,50 +28,34 @@ export function RightPanelToggle({ className }: RightPanelToggleProps) {
   const isArchivedConversation = useIsArchivedConversation();
   const navigate = useNavigate();
   const { conversationId } = useConversationId();
-  const {
-    isRightPanelShown,
-    setHasRightPanelToggled,
-    setIsRightPanelShown,
-    setSelectedTab,
-  } = useConversationStore();
+  const { setHasRightPanelToggled, setIsRightPanelShown, setSelectedTab } =
+    useConversationStore();
+
+  // Desktop keeps both panels visible (chat + the tabbed main area), so there
+  // is nothing to toggle — only mobile uses this, to open the /panel route.
+  if (!isMobile) {
+    return null;
+  }
 
   const handleToggle = () => {
     if (isArchivedConversation) {
       return;
     }
-
-    if (isMobile) {
-      if (!conversationId) return;
-      setHasRightPanelToggled(true);
-      setIsRightPanelShown(true);
-      const { selectedTab } = useConversationStore.getState();
-      if (!selectedTab) {
-        setSelectedTab("files");
-      }
-      navigate(`/conversations/${conversationId}/panel`);
-      return;
+    if (!conversationId) return;
+    setHasRightPanelToggled(true);
+    setIsRightPanelShown(true);
+    const { selectedTab } = useConversationStore.getState();
+    if (!selectedTab) {
+      setSelectedTab("browser");
     }
-
-    const newState = !isRightPanelShown;
-    setHasRightPanelToggled(newState);
-
-    if (newState) {
-      const { selectedTab } = useConversationStore.getState();
-      if (!selectedTab) {
-        setSelectedTab("files");
-      }
-    }
+    navigate(`/conversations/${conversationId}/panel`);
   };
 
   const tooltipText = isArchivedConversation
     ? t(I18nKey.CONVERSATION$UNAVAILABLE_FOR_ARCHIVES)
-    : isMobile
-      ? t(I18nKey.COMMON$SHOW_PANEL)
-      : isRightPanelShown
-        ? t(I18nKey.COMMON$HIDE_PANEL)
-        : t(I18nKey.COMMON$SHOW_PANEL);
+    : t(I18nKey.COMMON$SHOW_PANEL);
 
-  const ariaPressed = isMobile ? false : isRightPanelShown;
+  const ariaPressed = false;
 
   return (
     <ChatActionTooltip tooltip={tooltipText} ariaLabel={tooltipText}>

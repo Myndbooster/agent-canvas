@@ -24,7 +24,7 @@ export function ConversationMobilePanelPage({
     setHasRightPanelToggled(true);
     const st = useConversationStore.getState();
     if (!st.selectedTab) {
-      setSelectedTab("files");
+      setSelectedTab("browser");
     }
     return () => {
       setIsRightPanelShown(false);
