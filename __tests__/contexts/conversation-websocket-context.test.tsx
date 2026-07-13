@@ -7,6 +7,7 @@ import { useEventStore } from "#/stores/use-event-store";
 import { useOptimisticUserMessageStore } from "#/stores/optimistic-user-message-store";
 import { useBrowserStore } from "#/stores/browser-store";
 import { useConversationStore } from "#/stores/conversation-store";
+import { useCommandStore } from "#/stores/command-store";
 import { useUserConversation } from "#/hooks/query/use-user-conversation";
 import EventService from "#/api/event-service/event-service.api";
 import {
@@ -374,6 +375,53 @@ describe("ConversationWebSocketProvider — conversation-scoped event store", ()
       ),
     );
     expect(useConversationStore.getState().selectedTab).toBe("browser");
+  });
+
+  it("loads the preview + fills the Terminal from a Claude Code (ACP) tool call", async () => {
+    renderMainProvider("conv-acp-preview");
+    await waitFor(() => expect(wsCapture.mainOnMessage).not.toBeNull());
+
+    act(() => {
+      useConversationStore.getState().setSelectedTab("files");
+      useCommandStore.getState().clearTerminal();
+    });
+
+    // Claude Code runs bash as an ACPToolCallEvent, NOT ExecuteBash*.
+    const command =
+      'curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8765/hello.html';
+    act(() => {
+      wsCapture.mainOnMessage!({
+        data: JSON.stringify({
+          id: "evt-acp-1",
+          timestamp: new Date().toISOString(),
+          source: "agent",
+          kind: "ACPToolCallEvent",
+          tool_call_id: "acp-call-1",
+          title: command,
+          status: "in_progress",
+          tool_kind: "execute",
+          raw_input: { command },
+          raw_output: "",
+          content: null,
+          is_error: false,
+        }),
+      });
+    });
+
+    // Preview loads and the Browser tab is revealed.
+    await waitFor(() =>
+      expect(useBrowserStore.getState().previewUrl).toBe(
+        "http://127.0.0.1:8765/hello.html",
+      ),
+    );
+    expect(useConversationStore.getState().selectedTab).toBe("browser");
+
+    // Terminal (otherwise empty for ACP) now shows the command.
+    expect(
+      useCommandStore
+        .getState()
+        .commands.some((c) => c.type === "input" && c.content === command),
+    ).toBe(true);
   });
 
   it("ignores a localhost URL in the user's own message", async () => {

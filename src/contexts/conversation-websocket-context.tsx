@@ -34,6 +34,7 @@ import {
   isGoalConversationStateUpdateEvent,
   isExecuteBashActionEvent,
   isExecuteBashObservationEvent,
+  isACPToolCallEvent,
   isDisplayableErrorEvent,
   isPlanningFileEditorObservationEvent,
   isBrowserObservationEvent,
@@ -622,11 +623,41 @@ export function ConversationWebSocketProvider({
               .join("\n");
             appendOutput(textContent);
 
-            // Agent-agnostic preview hook: when a dev server announces its
-            // local URL in the terminal output, load it in the Browser tab.
-            // This is the only path that works for ACP agents (Claude Code),
-            // which don't emit BrowserObservation/canvas_ui events.
+            // Preview hook (native OpenHands agent): when a dev server announces
+            // its local URL in the terminal output, load it in the Browser tab.
             applyDetectedPreviewUrl(textContent);
+          }
+
+          // Claude Code (ACP) does NOT emit ExecuteBash* events — it runs bash
+          // as an ACPToolCallEvent, which the two branches above never match.
+          // That's why the Terminal tab is empty AND the preview never loads
+          // for Claude Code. The SDK emits ~two events per tool_call_id: a
+          // started one (pending/in_progress) and a terminal one
+          // (completed/failed). Feed the Terminal and run preview detection on
+          // the command + output.
+          if (isACPToolCallEvent(event) && event.tool_kind === "execute") {
+            const rawInput = event.raw_input as { command?: unknown } | null;
+            const command =
+              typeof rawInput?.command === "string"
+                ? rawInput.command
+                : event.title;
+            const output =
+              typeof event.raw_output === "string" ? event.raw_output : "";
+            const isTerminalStatus =
+              event.status === "completed" || event.status === "failed";
+
+            // Mirror the ExecuteBashAction→input / ExecuteBashObservation→output
+            // split across the two ACP events so the command isn't duplicated.
+            if (isTerminalStatus) {
+              if (output) appendOutput(output);
+            } else if (command) {
+              appendInput(command);
+            }
+
+            // Detection is idempotent — run it on whatever text is available
+            // (e.g. `curl http://127.0.0.1:8765/…` in the command).
+            if (command) applyDetectedPreviewUrl(command);
+            if (output) applyDetectedPreviewUrl(output);
           }
 
           // Also detect the preview URL from the agent's own chat message.
