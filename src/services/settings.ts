@@ -32,8 +32,8 @@ export const DEFAULT_SETTINGS: Settings = {
   max_budget_per_task: null,
   email: "",
   email_verified: true,
-  git_user_name: "openhands",
-  git_user_email: "openhands@all-hands.dev",
+  git_user_name: "user",
+  git_user_email: "user@example.com",
   agent_settings_schema: null,
   agent_settings: {
     schema_version: 6,

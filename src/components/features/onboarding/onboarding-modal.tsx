@@ -175,8 +175,10 @@ export function OnboardingModal({
         Math.min(Math.max(initialStep, 0), PHASE_ORDER_WITH_BACKEND.length - 1)
       ],
   );
+  // Default to Claude Code — the only agent offered in the "Choose your agent"
+  // panel (the native BoostersDev tile and Codex/Gemini are disabled there).
   const [selectedAgentId, setSelectedAgentId] =
-    React.useState<OnboardingAgentId>("openhands");
+    React.useState<OnboardingAgentId>("claude-code");
 
   // When the backend slide drops out of the flow (skipBackendStep flips
   // true), a user still parked on "backend" must be moved forward to the

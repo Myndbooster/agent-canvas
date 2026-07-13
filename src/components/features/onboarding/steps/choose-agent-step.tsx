@@ -75,12 +75,19 @@ interface AgentOption {
 // entry — it isn't an ACP provider, just the canonical default.
 function getAgentOptions(): AgentOption[] {
   return [
-    {
-      id: "openhands",
-      label: "BoostersDev",
-      descriptionKey: I18nKey.ONBOARDING$AGENT_OPENHANDS_DESCRIPTION,
-    },
-    ...ACP_PROVIDERS.map<AgentOption>((provider) => ({
+    // BoostersDev (native) agent tile hidden from the "Choose your agent"
+    // panel — only the third-party ACP agents (Claude Code, Codex, Gemini)
+    // are offered. Un-comment to restore the native option.
+    // {
+    //   id: "openhands",
+    //   label: "BoostersDev",
+    //   descriptionKey: I18nKey.ONBOARDING$AGENT_OPENHANDS_DESCRIPTION,
+    // },
+    // Only Claude Code is offered — Codex and Gemini are disabled in the
+    // "Choose your agent" panel. Widen this filter to re-enable them.
+    ...ACP_PROVIDERS.filter(
+      (provider) => provider.key === "claude-code",
+    ).map<AgentOption>((provider) => ({
       id: provider.key as OnboardingAgentId,
       label: provider.display_name,
       descriptionKey: provider.description_key,
