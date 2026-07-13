@@ -16949,7 +16949,7 @@
     "ca": "No s'ha carregat cap URL"
   },
   "BROWSER$NO_PAGE_LOADED": {
-    "en": "No page loaded yet. Ask BoostersDev to open a URL. Example: \"Open https://example.com\"",
+    "en": "No preview yet. Once your app's dev server is running it appears here automatically — or type a URL above to load one.",
     "ja": "まだページは読み込まれていません。BoostersDevにURLを開くよう指示してください。例: \"Open https://example.com\"",
     "zh-CN": "尚未加载页面。请使用BoostersDev打开网址。示例：\"Open https://example.com\"",
     "zh-TW": "尚未載入頁面。請指示 BoostersDev 開啟網址。範例：\"Open https://example.com\"",
@@ -16964,6 +16964,23 @@
     "tr": "Henüz hiçbir sayfa yüklenmedi. BoostersDev'e bir URL açmasını isteyin. Örnek: \"Open https://example.com\"",
     "uk": "Сторінка ще не завантажена. Попросіть BoostersDev відкрити URL-адресу. Приклад: \"Open https://example.com\"",
     "ca": "Encara no s'ha carregat cap pàgina. Demaneu a BoostersDev que obri una URL. Exemple: \"Obre https://example.com\""
+  },
+  "BROWSER$ADDRESS_BAR_LABEL": {
+    "en": "Enter a URL",
+    "ja": "URLを入力",
+    "zh-CN": "输入网址",
+    "zh-TW": "輸入網址",
+    "ko-KR": "URL 입력",
+    "no": "Skriv inn en URL",
+    "ar": "أدخل عنوان URL",
+    "de": "URL eingeben",
+    "fr": "Saisir une URL",
+    "it": "Inserisci un URL",
+    "pt": "Insira um URL",
+    "es": "Introduce una URL",
+    "ca": "Introduïu un URL",
+    "tr": "Bir URL girin",
+    "uk": "Введіть URL-адресу"
   },
   "USER$AVATAR_PLACEHOLDER": {
     "en": "user avatar placeholder",

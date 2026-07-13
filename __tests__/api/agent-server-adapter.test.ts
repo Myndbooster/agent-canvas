@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   ACP_SERVER_TAG_KEY,
+  buildDevServerSystemSuffix,
   buildRuntimeServicesSystemSuffix,
   buildStartConversationRequest,
   getDefaultConversationTitle,
@@ -1147,12 +1148,22 @@ describe("buildRuntimeServicesSystemSuffix", () => {
   });
 });
 
+describe("buildDevServerSystemSuffix", () => {
+  it("instructs the agent to background the dev server and print the URL", () => {
+    const suffix = buildDevServerSystemSuffix();
+    expect(suffix).toContain("<WEB_PREVIEW>");
+    expect(suffix.toLowerCase()).toContain("background");
+    // Must surface the URL so terminal-output detection can pick it up.
+    expect(suffix.toLowerCase()).toContain("url");
+  });
+});
+
 describe("agent_settings runtime services suffix", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  it("does not set system_message_suffix when no runtime info is provided", () => {
+  it("sets the dev-server suffix (without RUNTIME_SERVICES) when no runtime info is provided", () => {
     const payload = buildStartConversationRequest({
       settings: DEFAULT_SETTINGS,
       query: "hello",
@@ -1167,6 +1178,12 @@ describe("agent_settings runtime services suffix", () => {
     expect(Array.isArray(payload.agent_settings.agent_context.skills)).toBe(
       true,
     );
+    // The dev-server instruction is unconditional (all build modes); the
+    // RUNTIME_SERVICES block is dev-stack-only and absent here.
+    const suffix = payload.agent_settings.agent_context
+      .system_message_suffix as string;
+    expect(suffix).toContain("<WEB_PREVIEW>");
+    expect(suffix).not.toContain("<RUNTIME_SERVICES>");
   });
 
   it("sets system_message_suffix when runtime info is provided", () => {

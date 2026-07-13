@@ -280,6 +280,46 @@ export function buildRuntimeServicesSystemSuffix(): string | undefined {
   return lines.join("\n");
 }
 
+/**
+ * Instruction, appended to every agent's system prompt, telling it to start
+ * the user's web dev server after frontend changes and surface its local URL.
+ *
+ * Unlike {@link buildRuntimeServicesSystemSuffix} (dev-stack only) this is
+ * unconditional: it must reach production/static builds and, crucially, the
+ * ACP (Claude Code) path, which has none of the native agent's "run the dev
+ * server + show a preview" conventions.
+ *
+ * The load-bearing detail is *background* launch. Agent Canvas detects the
+ * preview URL by scanning terminal output (`ExecuteBashObservation`), and a
+ * foreground `npm run dev` blocks — it never returns an observation until it
+ * times out, so the URL would never surface. The agent must launch the server
+ * detached and then echo its `Local:` URL line to stdout.
+ */
+export function buildDevServerSystemSuffix(): string {
+  return [
+    "<WEB_PREVIEW>",
+    "The user is working inside Agent Canvas, which has a built-in Browser tab",
+    "that shows a live, interactive preview of their running web app. Whenever",
+    "you create or modify a web project (Vite, Next.js, Create React App, Astro,",
+    "plain static site, etc.), make sure its dev server is running so the preview",
+    "appears.",
+    "",
+    "Rules for starting it:",
+    "* Start the dev server DETACHED / in the BACKGROUND so your tool call",
+    "  returns immediately — a foreground `npm run dev` blocks and the preview",
+    "  will never appear. For example:",
+    "      nohup npm run dev > /tmp/devserver.log 2>&1 &",
+    "      sleep 3 && cat /tmp/devserver.log",
+    "* After it boots, PRINT the local URL line to stdout (e.g.",
+    "  `Local: http://localhost:5173/`) so the preview can pick it up. If the",
+    "  framework doesn't print it, echo it yourself.",
+    "* If a dev server is already running for this project, reuse it instead of",
+    "  starting another — don't restart it every turn, and keep the port stable.",
+    "* Bind to localhost (the default for most dev servers is fine).",
+    "</WEB_PREVIEW>",
+  ].join("\n");
+}
+
 export function toConversationUrl(conversationId: string): string {
   // Local-format conversation URL — points at whichever local agent-server
   // is actually serving the conversation (the bundled one when the active
@@ -635,7 +675,15 @@ function buildBundledSkills(): BundledSkill[] {
 }
 
 function buildAgentContext(agentSettings: SettingsRecord): SettingsRecord {
-  const runtimeServicesSuffix = buildRuntimeServicesSystemSuffix();
+  // The dev-server instruction is unconditional (all build modes, both agent
+  // paths); the RUNTIME_SERVICES block only exists in dev-stack builds. Join
+  // whichever parts are present into a single system_message_suffix.
+  const systemMessageSuffix = [
+    buildDevServerSystemSuffix(),
+    buildRuntimeServicesSystemSuffix(),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
   const existingContext = toRecord(agentSettings.agent_context);
 
   // Merge bundled public skills with any skills already present in the
@@ -660,8 +708,8 @@ function buildAgentContext(agentSettings: SettingsRecord): SettingsRecord {
     load_public_skills: false,
     load_user_skills: true,
     load_project_skills: true,
-    ...(runtimeServicesSuffix
-      ? { system_message_suffix: runtimeServicesSuffix }
+    ...(systemMessageSuffix
+      ? { system_message_suffix: systemMessageSuffix }
       : {}),
   };
 }

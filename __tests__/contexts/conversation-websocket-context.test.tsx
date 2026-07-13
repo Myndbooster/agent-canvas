@@ -6,6 +6,7 @@ import { ConversationWebSocketProvider } from "#/contexts/conversation-websocket
 import { useEventStore } from "#/stores/use-event-store";
 import { useOptimisticUserMessageStore } from "#/stores/optimistic-user-message-store";
 import { useBrowserStore } from "#/stores/browser-store";
+import { useConversationStore } from "#/stores/conversation-store";
 import { useUserConversation } from "#/hooks/query/use-user-conversation";
 import EventService from "#/api/event-service/event-service.api";
 import {
@@ -219,6 +220,7 @@ describe("ConversationWebSocketProvider — conversation-scoped event store", ()
     useBrowserStore.setState({
       url: "https://example.com",
       screenshotSrc: "data:image/png;base64,abc123",
+      previewUrl: "http://localhost:5173/",
     });
 
     rerender(
@@ -236,6 +238,57 @@ describe("ConversationWebSocketProvider — conversation-scoped event store", ()
       expect(useBrowserStore.getState().screenshotSrc).toBe(""),
     );
     expect(useBrowserStore.getState().url).toBe("");
+    expect(useBrowserStore.getState().previewUrl).toBe("");
+  });
+
+  it("loads a dev-server URL into the preview when it appears in bash output", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <ConversationWebSocketProvider
+          conversationId="conv-preview"
+          conversationUrl="http://localhost/api"
+        >
+          <div />
+        </ConversationWebSocketProvider>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => expect(wsCapture.mainOnMessage).not.toBeNull());
+
+    // Preset a different tab so revealing "browser" is an observable change.
+    act(() => {
+      useConversationStore.getState().setSelectedTab("files");
+    });
+
+    // Act: the agent's dev server prints its Vite "Local:" banner to stdout.
+    act(() => {
+      wsCapture.mainOnMessage!({
+        data: JSON.stringify({
+          id: "evt-bash-1",
+          timestamp: new Date().toISOString(),
+          source: "environment",
+          action_id: "action-bash-1",
+          tool_name: "terminal",
+          tool_call_id: "call-bash-1",
+          observation: {
+            kind: "ExecuteBashObservation",
+            content: [
+              {
+                type: "text",
+                text: "  VITE ready\n  ➜  Local:   http://localhost:5173/",
+              },
+            ],
+          },
+        }),
+      });
+    });
+
+    // Assert: the preview URL is populated and the Browser tab is revealed.
+    await waitFor(() =>
+      expect(useBrowserStore.getState().previewUrl).toBe(
+        "http://localhost:5173/",
+      ),
+    );
+    expect(useConversationStore.getState().selectedTab).toBe("browser");
   });
 
   it("keeps events that arrived after history when re-entering the same conversation", async () => {

@@ -40,7 +40,12 @@ import {
   isSwitchLLMObservationEvent,
   isCanvasUIActionEvent,
 } from "#/types/agent-server/type-guards";
-import { handleCanvasUIAction } from "#/services/canvas-ui";
+import {
+  handleCanvasUIAction,
+  revealConversationTab,
+} from "#/services/canvas-ui";
+import { detectDevServerUrl } from "#/utils/detect-dev-server-url";
+import { transformVSCodeUrl } from "#/utils/vscode-url-helper";
 import { ConversationStateUpdateEventStats } from "#/types/agent-server/core/events/conversation-state-event";
 import type {
   ConversationErrorEvent,
@@ -583,6 +588,23 @@ export function ConversationWebSocketProvider({
               .map((c) => c.text)
               .join("\n");
             appendOutput(textContent);
+
+            // Agent-agnostic preview hook: when a dev server announces its
+            // local URL in the terminal output, load it in the Browser tab.
+            // This is the only path that works for ACP agents (Claude Code),
+            // which don't emit BrowserObservation/canvas_ui events.
+            const detectedUrl = detectDevServerUrl(textContent);
+            if (detectedUrl) {
+              const browserStore = useBrowserStore.getState();
+              const wasEmpty = !browserStore.previewUrl;
+              const previewUrl = transformVSCodeUrl(detectedUrl) ?? detectedUrl;
+              if (previewUrl !== browserStore.previewUrl) {
+                browserStore.setPreviewUrl(previewUrl);
+                // Auto-open the Browser tab only on first detection, so the
+                // panel isn't forced back open every time the user closes it.
+                if (wasEmpty) revealConversationTab("browser");
+              }
+            }
           }
 
           // Handle BrowserObservation events - update browser store with screenshot

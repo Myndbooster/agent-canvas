@@ -29,6 +29,16 @@ function isValidTab(value: string): value is ConversationTab {
   return VALID_TABS.has(value as ConversationTab);
 }
 
+/**
+ * Reveal a conversation tab from a non-React caller (e.g. the WebSocket
+ * dispatch), opening the right panel if it's collapsed. Single-sources the
+ * reveal behavior used by both `handleCanvasUIAction` and the dev-server
+ * preview auto-detection.
+ */
+export function revealConversationTab(tab: ConversationTab): void {
+  navigateToTab(tab);
+}
+
 export function handleCanvasUIAction(
   action: CanvasUIAction,
   conversationId: string | null = null,
