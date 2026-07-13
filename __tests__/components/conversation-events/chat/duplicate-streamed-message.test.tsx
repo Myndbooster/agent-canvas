@@ -116,7 +116,10 @@ describe("issue #1534 — streamed intermediate message duplication", () => {
     expect(countOccurrences(container.textContent ?? "", THOUGHT)).toBe(1);
   });
 
-  it("keeps the streamed reasoning visible (Thinking section survives)", () => {
+  // Skipped: the "Thinking" (reasoning) section is hidden from the UI per
+  // request — see `isHiddenInternalEvent` in event-message.tsx. Un-skip when
+  // that hide is reverted.
+  it.skip("keeps the streamed reasoning visible (Thinking section survives)", () => {
     const allEvents = [userMessage, streamingDelta, action, observation];
     const uiEvents = reduce(allEvents);
 
@@ -131,7 +134,9 @@ describe("issue #1534 — streamed intermediate message duplication", () => {
     ).toContain("Considering the request before acting.");
   });
 
-  it("renders a single Thinking section when the action carries its own reasoning", () => {
+  // Skipped: the "Thinking" (reasoning) section is hidden from the UI per
+  // request — see `isHiddenInternalEvent` in event-message.tsx.
+  it.skip("renders a single Thinking section when the action carries its own reasoning", () => {
     // When the finalized action also reports reasoning, the streamed delta's
     // reasoning would duplicate the action's "Thinking" — so the delta is
     // dropped and only one Thinking section renders.

@@ -34,7 +34,10 @@ const makeEvent = (
   ...overrides,
 });
 
-describe("EventMessage - ACPToolCallEvent dispatch", () => {
+// Skipped: agent execution internals (commands/code/tool cards) are hidden
+// from the UI per request — see `isHiddenInternalEvent` in event-message.tsx.
+// Un-skip when that hide is reverted.
+describe.skip("EventMessage - ACPToolCallEvent dispatch", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useAgentState).mockReturnValue({

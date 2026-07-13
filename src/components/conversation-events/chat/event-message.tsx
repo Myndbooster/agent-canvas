@@ -56,6 +56,27 @@ interface EventMessageProps {
 }
 
 /**
+ * HIDE AGENT INTERNALS FROM THE UI (per request, 2026-07).
+ *
+ * True for events whose rendering surfaces the agent's execution details —
+ * executed commands, code edits, tool-call cards, and thinking — which we do
+ * NOT want to show the end user. Only conversational messages, final summaries,
+ * plan previews and errors remain. This is intentionally NOT a deletion: to
+ * restore the original behavior, stop calling this (comment out the early
+ * `return null` in `EventMessage`) and reinstate the streaming reasoning line.
+ *
+ * Kept as a standalone predicate (rather than inline type-guards) so it doesn't
+ * narrow `event`'s type for the branches below.
+ *   - ACP tool calls (Claude Code / Codex / Gemini CLI): commands + code.
+ *   - Native action events except FinishAction: commands, code, ThinkAction.
+ *   - Native observation events except the planning file editor (PlanPreview).
+ */
+const isHiddenInternalEvent = (event: OpenHandsEvent): boolean =>
+  isACPToolCallEvent(event) ||
+  (isActionEvent(event) && event.action.kind !== "FinishAction") ||
+  (isObservationEvent(event) && !isPlanningFileEditorObservationEvent(event));
+
+/**
  * Extracts activated skills from a MessageEvent, supporting both
  * activated_skills and activated_microagents field names.
  */
@@ -162,6 +183,13 @@ export function EventMessage({
     isFromPlanningAgent,
   };
 
+  // Hide the agent's execution internals (commands, code, tool cards, thinking)
+  // from the end user. Comment out this early return to restore the original
+  // rendering. See `isHiddenInternalEvent` above for the full rationale.
+  if (isHiddenInternalEvent(event)) {
+    return null;
+  }
+
   // Finished `/goal` loop: render the terminal status inline so it settles into
   // the conversation. should-render-event.ts only lets the terminal goal event
   // through; the active loop is shown by the separate bottom GoalStatusBanner.
@@ -192,17 +220,19 @@ export function EventMessage({
   }
 
   if (isStreamingDeltaEvent(event)) {
-    // Route an inline <think> block to the thinking section, not the bubble.
-    const { reasoning: inlineThink, message } = splitInlineThink(
-      event.content ?? "",
-      { streaming: true },
-    );
-    const reasoningContent = [event.reasoning_content ?? "", inlineThink]
-      .filter(Boolean)
-      .join("\n\n");
+    // Route an inline <think> block away from the message bubble. Thinking /
+    // reasoning is HIDDEN FROM UI per request (see the hide block above) — only
+    // the message bubble is shown. To restore, reinstate the reasoningContent
+    // computation and the CollapsibleThinking line below.
+    const { message } = splitInlineThink(event.content ?? "", {
+      streaming: true,
+    });
+    // const reasoningContent = [event.reasoning_content ?? "", inlineThink]
+    //   .filter(Boolean)
+    //   .join("\n\n");
     return (
       <>
-        {reasoningContent && <CollapsibleThinking content={reasoningContent} />}
+        {/* {reasoningContent && <CollapsibleThinking content={reasoningContent} />} */}
         {message && (
           <ChatMessage
             type="agent"
