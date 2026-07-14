@@ -507,6 +507,35 @@ export const getPushToPRPrompt = (gitProvider: Provider): string => {
 export const getCreateNewBranchPrompt = (): string =>
   "Please create a new branch with a descriptive name related to the work you plan to do.";
 
+/**
+ * Generate a checkpoint prompt. Asks the agent to commit the current work,
+ * initializing a git repository first when the working directory is not yet a
+ * repo. Checkpoint commits use a recognizable `Checkpoint:` subject prefix.
+ * @returns The checkpoint prompt
+ */
+export const getCheckpointPrompt = (): string =>
+  "Please create a checkpoint of the current work. First check whether the working directory is a git repository (`git rev-parse --is-inside-work-tree`). If it is not, run `git init` and set a local `user.name`/`user.email` if none is configured so a commit can be made. Then stage everything with `git add -A` and commit with a message that starts with `Checkpoint:` followed by a short summary of the current state. If there is nothing to commit, tell me that instead of creating an empty commit.";
+
+/**
+ * Generate a prompt to restore the repository to a specific checkpoint commit
+ * WITHOUT losing history (non-destructive). The agent reverts the range of
+ * commits after `sha` and commits the result, so the working tree matches the
+ * checkpoint while every commit remains in history and the action itself can be
+ * undone later.
+ * @param sha The full commit SHA to restore to
+ * @param subject Optional commit subject, included for context
+ * @returns The revert-to-checkpoint prompt
+ */
+export const getRevertToCommitPrompt = (
+  sha: string,
+  subject?: string,
+): string => {
+  const shortSha = sha.slice(0, 7);
+  const label = subject ? `\`${sha}\` ("${subject}")` : `\`${sha}\``;
+
+  return `Please restore the repository to the state of checkpoint ${label} without losing history. Use a non-destructive revert: run \`git revert --no-commit ${sha}..HEAD\` and then commit the result (for example with the message \`Revert to checkpoint ${shortSha}\`), so the working tree matches that checkpoint while every commit — including the ones being undone — remains in history and this can itself be undone later. Do NOT use \`git reset --hard\` or \`git checkout ${sha}\`. If the working tree has uncommitted changes that block the revert, tell me first rather than discarding them. Afterwards, confirm the new HEAD.`;
+};
+
 // Helper functions
 export function getTotalTaskCount(
   suggestedTasks: SuggestedTaskGroup[] | undefined,

@@ -92,6 +92,14 @@ export const useTracking = () => {
     track("create_pr_button_clicked");
   };
 
+  const trackCheckpointButtonClick = () => {
+    track("checkpoint_button_clicked");
+  };
+
+  const trackRevertToCheckpointClick = () => {
+    track("revert_to_checkpoint_clicked");
+  };
+
   const trackUserSignupCompleted = () => {
     track("user_signup_completed", {
       signup_timestamp: new Date().toISOString(),
@@ -321,6 +329,8 @@ export const useTracking = () => {
     trackPushButtonClick,
     trackPullButtonClick,
     trackCreatePrButtonClick,
+    trackCheckpointButtonClick,
+    trackRevertToCheckpointClick,
     trackUserSignupCompleted,
     trackPrebuiltAutomationEnabled,
     trackInitialQuerySubmitted,

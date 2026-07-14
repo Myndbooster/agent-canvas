@@ -5,6 +5,7 @@ import { GitControlBarBranchButton } from "./git-control-bar-branch-button";
 import { GitControlBarPullButton } from "./git-control-bar-pull-button";
 import { GitControlBarPushButton } from "./git-control-bar-push-button";
 import { GitControlBarPrButton } from "./git-control-bar-pr-button";
+import { GitControlBarCheckpointButton } from "./git-control-bar-checkpoint-button";
 import { useActiveConversation } from "#/hooks/query/use-active-conversation";
 import { useLocalGitInfo } from "#/hooks/query/use-local-git-info";
 import { useTaskPolling } from "#/hooks/query/use-task-polling";
@@ -26,6 +27,8 @@ import { getStoredConversationMetadata } from "#/api/conversation-metadata-store
 import { useActiveBackend } from "#/contexts/active-backend-context";
 import { useUserProviders } from "#/hooks/use-user-providers";
 import { useOptionalScrollContext } from "#/context/scroll-context";
+import { useAgentState } from "#/hooks/use-agent-state";
+import { AgentState } from "#/types/agent-state";
 
 interface GitControlBarProps {
   onSuggestionsClick: (value: string) => void;
@@ -108,6 +111,13 @@ export function GitControlBar({ onSuggestionsClick }: GitControlBarProps) {
   // initial history preload has finished (matches chat-interface loading gate).
   const isConversationReady =
     !!conversation && webSocketStatus === "OPEN" && !isLoadingHistory;
+
+  // The Checkpoint chip works even with no repo, so it only needs a conversation
+  // to exist. It is disabled while the agent is actively running so a commit
+  // request can't land in the middle of a task.
+  const { curAgentState } = useAgentState();
+  const isAgentBusy = curAgentState === AgentState.RUNNING;
+  const canShowCheckpoint = !!conversation;
 
   useEffect(() => {
     if (!isWorkspaceMenuOpen) return undefined;
@@ -219,7 +229,8 @@ export function GitControlBar({ onSuggestionsClick }: GitControlBarProps) {
   // branch or push/pull/PR also count). When false, the bar has nothing to
   // show — return null so the wrapper above collapses to its natural padding
   // instead of leaving an empty DOM node below the chat input.
-  const hasAnyContent = showRepoButton || !!selectedBranch || hasRepository;
+  const hasAnyContent =
+    showRepoButton || !!selectedBranch || hasRepository || canShowCheckpoint;
   if (!hasAnyContent) return null;
 
   return (
@@ -286,6 +297,14 @@ export function GitControlBar({ onSuggestionsClick }: GitControlBarProps) {
               />
             </GitControlBarTooltipWrapper>
           </>
+        ) : null}
+
+        {canShowCheckpoint ? (
+          <GitControlBarCheckpointButton
+            onSuggestionsClick={onSuggestionsClick}
+            isConversationReady={isConversationReady}
+            isAgentBusy={isAgentBusy}
+          />
         ) : null}
       </div>
 
